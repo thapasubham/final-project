@@ -1,0 +1,25 @@
+
+services:
+  # backend:
+  #   build: /backend
+  #   ports: 
+  #   - 3000:3000
+  #   volumes:
+  #   - type: bind
+  #     source: ./backend/src
+  #     target: /app/src
+  #   command: npm run dev 
+  frontend:
+    restart: unless-stopped
+    # depends_on:
+    #   - backend
+    build: /frontend
+    ports: 
+    - 5000:5000
+    command: npm run dev 
+    volumes:
+    - type: bind
+      source: ./frontend/src
+      target: /app/src
+
+  
