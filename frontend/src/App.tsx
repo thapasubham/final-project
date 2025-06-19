@@ -1,15 +1,15 @@
-import {Container, Typography} from '@mui/material'
+import { Container } from '@mui/material'
 import './App.css'
-
+import Page from "./Components/page/Page.tsx";
 
 function App() {
 
   return (
     <>
       <Container maxWidth="sm">
-        <Typography>Preview Text Here</Typography>
+        <Page />
       </Container>
-        </>
+    </>
   )
 }
 
