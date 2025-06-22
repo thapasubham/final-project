@@ -1,9 +1,10 @@
 import { Box, Button, Container, InputAdornment, Slider, TextField, Typography } from "@mui/material";
 import PreviewList from "../fontPreview/PreviewList.tsx";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import type { preview } from "../../types/previewTypes.ts";
 import ColorPicker from "../colorPicker/colorPicker.tsx";
+import { createSearchParams, useNavigate, useSearchParams } from "react-router-dom";
 
 
 const initialPreview: preview =
@@ -14,8 +15,48 @@ const initialPreview: preview =
     backgroundColor: "#FFFFFF"
 }
 function Page() {
-    const [preview, setPreview] = useState<preview>(initialPreview);
+    const [searchParam, setParam] = useSearchParams();
+    const navigate = useNavigate();
+    const hasMounted = useRef(false);
 
+
+
+    const text = searchParam.get("text") || "";
+    const color = searchParam.get("color") || "";
+    const backgroundColor = searchParam.get("backgroundColor") || "";
+    const size = Number(searchParam.get("size") || NaN);
+
+    const param: preview = {
+        text: text || initialPreview.text,
+        size: !isNaN(size) ? size : initialPreview.size,
+        color: color || initialPreview.color,
+        backgroundColor: backgroundColor || initialPreview.backgroundColor
+    };
+
+    const [preview, setPreview] = useState<preview>(param);
+
+
+    useEffect(() => {
+
+
+
+        const newParams = {
+            text: preview.text,
+            color: preview.color,
+            backgroundColor: preview.backgroundColor,
+            size: preview.size.toString(),
+        };
+
+
+        console.log(param)
+        const delay = setTimeout(() => {
+
+            return setParam(newParams);
+
+
+        }, 200)
+        return () => clearTimeout(delay);
+    }, [preview]);
     return (
         <>
 
