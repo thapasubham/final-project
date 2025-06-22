@@ -1,6 +1,6 @@
 import PreviewRow from "./previewRow.tsx";
 import type { preview } from "../../types/previewTypes.ts";
-import { useEffect,  useState } from "react";
+import { useEffect, useState } from "react";
 import getFonts from "../../api/getFonts.ts";
 type font = {
     id: number,
@@ -24,10 +24,10 @@ function PreviewList({ preview }: { preview: preview }) {
 
     }, []);
 
-    console.log(img)
-    const list = img.map((item) => (
+
+    const list = img.length > 0 ? img.map((item) => (
         <PreviewRow key={item.id} preview={preview} img={item} />
-    ));
+    )) : "No data found";
     return (
         <>
             {list}

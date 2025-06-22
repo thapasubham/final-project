@@ -1,4 +1,4 @@
-import { Card, createTheme, CssBaseline,  ThemeProvider, Typography } from "@mui/material";
+import { Box, Card, createTheme, CssBaseline, ThemeProvider, Typography } from "@mui/material";
 import type { preview } from "../../types/previewTypes.ts";
 import { API_URL } from "../../utils/config.ts";
 import { useMemo } from "react";
@@ -41,7 +41,7 @@ function PreviewRow({ preview, img }: { preview: preview, img: font }) {
                         width: 800,
                         maxWidth: 600,
                         maxHeight: preview.size * 100,
-                        background: preview.backgroundColor,
+
                         display: "flex",
                         flexDirection: "column",
                         gap: 0.5,
@@ -50,21 +50,25 @@ function PreviewRow({ preview, img }: { preview: preview, img: font }) {
 
 
 
-                    <Typography sx={{ px: 1 }} color={preview.color}>
+                    <Typography variant="subtitle2" sx={{ px: 1 }} >
                         {fontName}
                     </Typography>
-                    <Typography
-                        sx={{
-                            fontSize: preview.size,
-                            px: 1,
-                            color: preview.color,
-                            fontFamily: fontName,
+                    <Box sx={{
+                        background: preview.backgroundColor,
+                        borderRadius: 1
+                    }}>
+                        <Typography
+                            sx={{
+                                fontSize: preview.size,
+                                px: 1,
+                                color: preview.color,
+                                fontFamily: fontName,
 
-                        }}>
-                        {preview.text}
+                            }}>
+                            {preview.text}
 
-                    </Typography>
-
+                        </Typography>
+                    </Box>
                 </Card>
             </ThemeProvider >
         </>
