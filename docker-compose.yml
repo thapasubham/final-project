@@ -1,5 +1,15 @@
 
 services:
+
+  database:
+    image: postgres
+    ports: 
+      - 8000:5432
+    environment:
+      POSTGRES_PASSWORD: subham12
+    volumes:
+      - db:/var/lib/postgresql/data
+
   # backend:
   #   build: /backend
   #   ports: 
@@ -22,4 +32,6 @@ services:
       source: ./frontend/src
       target: /app/src
 
+volumes:
+    db:
   
