@@ -1,8 +1,8 @@
 import { API_URL } from "../utils/config.ts";
 
-export default async function getFonts() {
+export default async function getFonts(limit: number, offset: number) {
   try {
-    const url = `${API_URL}/api/font`;
+    const url = `${API_URL}/api/font?limit=${limit}&offset=${offset}`;
     console.log(`Fetching fonts`, url);
     const response = await fetch(url, {
       method: "GET",
