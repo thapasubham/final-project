@@ -13,7 +13,7 @@ export class fontdb {
   static async Read(limit: number, offset: number, filter: string[]) {
     const db = await respository.createQueryBuilder("font");
     if (filter.length > 0) {
-      console.log("skibidi toilet");
+      console.log(filter);
     }
 
     console.log(limit, offset);
