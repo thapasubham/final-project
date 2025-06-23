@@ -16,14 +16,13 @@ const initialPreview: preview =
 }
 function Page() {
     const [searchParam, setParam] = useSearchParams();
-    const navigate = useNavigate();
     const hasMounted = useRef(false);
 
 
 
     const text = searchParam.get("text") || "";
     const color = searchParam.get("color") || "";
-    const backgroundColor = searchParam.get("backgroundColor") || "";
+    const backgroundColor = searchParam.get("bgColor") || "";
     const size = Number(searchParam.get("size") || NaN);
 
     const param: preview = {
@@ -43,7 +42,7 @@ function Page() {
         const newParams = {
             text: preview.text,
             color: preview.color,
-            backgroundColor: preview.backgroundColor,
+            bgColor: preview.backgroundColor,
             size: preview.size.toString(),
         };
 

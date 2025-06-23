@@ -20,7 +20,7 @@ function ColorPicker({ color, label, onChange }: colorPickerProps) {
     return (
         <>
 
-            <Box sx={{ border: 1, padding: 1, borderRadius: 2 }}>
+            <Box sx={{ border: 1, padding: 1, borderRadius: 2, gap: 3 }}>
                 <Typography maxWidth={"auto"} color="textSecondary" component="div">
                     {label}
                 </Typography>
@@ -33,7 +33,8 @@ function ColorPicker({ color, label, onChange }: colorPickerProps) {
                         height: 40,
                         border: "none",
                         backgroundColor: "transparent",
-                        cursor: "pointer"
+                        cursor: "pointer",
+                        padding: 5
                     }}
                     aria-label="Select text color"
                 />
