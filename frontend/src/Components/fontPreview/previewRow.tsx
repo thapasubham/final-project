@@ -1,19 +1,76 @@
-import {Card, Divider, Typography} from "@mui/material";
-import type {preview} from "../../types/previewTypes.ts";
+import { Box, Card, createTheme, CssBaseline, ThemeProvider, Typography } from "@mui/material";
+import type { preview } from "../../types/previewTypes.ts";
+import { API_URL } from "../../utils/config.ts";
+import { useMemo } from "react";
+type font = {
+    id: number;
+    name: string;
+    fileName: string;
+}
 
-function PreviewRow({preview}: {preview: preview}) {
-    return(
+
+
+function PreviewRow({ preview, img }: { preview: preview, img: font }) {
+    const fontName = img.fileName.split(".")[0]
+    const fontUrl = `${API_URL}/static/${img.fileName}`;
+    const theme = useMemo(() => {
+        return createTheme({
+
+            components: {
+                MuiCssBaseline: {
+                    styleOverrides: `
+             @font-face {
+              font-family: '${fontName}';
+              src: url('${fontUrl}') format('opentype');
+            }
+            }
+            `
+                }
+            }
+        })
+
+    }, [])
+    return (
         <>
-            <Card sx={{width: 600, maxWidth: 600, height: 100, background: preview.backgroundColor}}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+
+                <Card
+                    sx={{
+                        textAlign: "left",
+                        width: 800,
+                        maxWidth: 600,
+                        maxHeight: preview.size * 100,
+
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: 0.5,
+                    }}
+                >
 
 
-            <Typography
-                sx={{ fontSize: preview.size, fontWeight: 600, color: preview.color }}>
-                {preview.text}
-            </Typography>
 
-            </Card>
-            <Divider sx={{ margin: "0 auto" }}/>
+                    <Typography variant="subtitle2" sx={{ px: 1 }} >
+                        {fontName}
+                    </Typography>
+                    <Box sx={{
+                        background: preview.backgroundColor,
+                        borderRadius: 1
+                    }}>
+                        <Typography
+                            sx={{
+                                fontSize: preview.size,
+                                px: 1,
+                                color: preview.color,
+                                fontFamily: fontName,
+
+                            }}>
+                            {preview.text}
+
+                        </Typography>
+                    </Box>
+                </Card>
+            </ThemeProvider >
         </>
     )
 }
