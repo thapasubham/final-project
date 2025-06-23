@@ -4,28 +4,34 @@ services:
   database:
     image: postgres
     ports: 
-      - 8000:5432
+      - "8000:5432"
     environment:
       POSTGRES_PASSWORD: subham12
+    networks:
+      - font
     volumes:
       - db:/var/lib/postgresql/data
 
-  # backend:
-  #   build: /backend
-  #   ports: 
-  #   - 3000:3000
-  #   volumes:
-  #   - type: bind
-  #     source: ./backend/src
-  #     target: /app/src
-  #   command: npm run dev 
+  backend:
+    depends_on:
+    - database
+    build: /backend
+    ports: 
+    - "3000:3000"
+    networks:
+      - font
+    volumes:
+    - type: bind
+      source: ./backend/src
+      target: /app/src
+    command: npm run dev 
   frontend:
     restart: unless-stopped
-    # depends_on:
-    #   - backend
+    depends_on:
+      - backend
     build: /frontend
     ports: 
-    - 5000:5000
+    - "5000:5000"
     command: npm run dev 
     environment:
       - BASE_URL=http://localhost:3000/api
@@ -34,6 +40,9 @@ services:
       source: ./frontend/src
       target: /app/src
 
+networks: 
+    font: 
+      driver: bridge
 volumes:
     db:
   

@@ -5,8 +5,8 @@ import { Font } from "./entity/font.js";
 const AppDataSource = new DataSource({
   logging: true,
   type: "postgres",
-  host: "localhost",
-  port: 8000,
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
   username: "postgres",
   password: "subham12",
   database: "fonts",
