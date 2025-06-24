@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "tsc && --env-file=.env node dist/src/index.js",
+    "insert-font": "tsx --env-file=.env src/insert.ts",
     "dev": "tsx --watch --env-file=.env src/index.ts",
     "typeorm": "node --env-file=.env --loader ts-node/esm ./node_modules/typeorm/cli.js",
     "migration:run": "npm run typeorm -- migration:run -d ./src/data-source.ts",
@@ -21,7 +22,8 @@
     "@types/multer": "^1.4.13",
     "@types/node": "^24.0.3",
     "ts-node": "^10.9.2",
-    "tsx": "^4.20.3"
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
     "cors": "^2.8.5",
