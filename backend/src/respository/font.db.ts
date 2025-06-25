@@ -20,13 +20,14 @@ export class fontdb {
     return result;
   }
 
-  static async Read(limit: number, offset: number, lang: string[]) {
+  static async Read(limit: number, offset: number, lang: string) {
     let db = await respository
       .createQueryBuilder("font")
       .leftJoinAndSelect("font.langs", "language");
 
-    if (lang.length > 0) {
-      db = db.where("language.name IN (:...name)", { name: lang });
+    if (lang) {
+      console.log(typeof lang);
+      db = db.where("language.name = (:name)", { name: lang });
     }
 
     const [result, count] = await db.take(limit).skip(offset).getManyAndCount();

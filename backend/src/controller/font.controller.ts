@@ -26,8 +26,8 @@ export class FontsController {
     const limit = Number(req.query.limit) || 5;
     const { lang } = req.query;
 
-    const langs = lang ? (lang as string).split(",") : [];
-
+    const langs = lang as string;
+    console.log(langs);
     const filename = await this.fontService.ReadFont(limit, offset, langs);
     console.log(filename.count);
     res.send(filename);
