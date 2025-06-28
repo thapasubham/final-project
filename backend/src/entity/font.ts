@@ -8,7 +8,8 @@ import {
 
 @Entity("font")
 export class Font {
-  @PrimaryGeneratedColumn()
+ 
+ @PrimaryGeneratedColumn()
   id?: number;
 
   @Column("varchar", { nullable: false, unique: true })

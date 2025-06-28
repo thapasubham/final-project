@@ -7,7 +7,6 @@ const respository = AppDataSource.getRepository(Language);
 export class Langdb {
   static async Create(lang: Language) {
     const result = await respository.save(lang);
-    console.log(result);
     return result;
   }
   static async Read() {

@@ -5,7 +5,6 @@ const langService = new LangService();
 export class LangController {
   async Create(req: Request, res: Response) {
     const lang = req.body;
-    console.log(lang);
     const result = await langService.Create(lang);
     res.send(result);
   }
@@ -13,5 +12,4 @@ export class LangController {
     const result = await langService.Read();
     res.send(result);
   }
-  
 }

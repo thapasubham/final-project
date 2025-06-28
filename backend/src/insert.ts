@@ -30,7 +30,6 @@ async function run() {
       });
 
       const result = await fontRepo.save(font);
-      console.log(result.name + "saved");
     }
   } catch (e) {
     console.log(e.message);

@@ -10,7 +10,6 @@ const startServer = () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   const url = process.env.URL;
-  console.log(url);
   app.use(
     cors({
       origin: url,

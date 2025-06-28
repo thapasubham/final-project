@@ -8,8 +8,14 @@ export class FontService {
     return result;
   }
 
-  async ReadFont(limit: number, offset: number, lang: string[]) {
-    const result = await fontdb.Read(limit, offset, lang);
+  async ReadFont(
+    limit: number,
+    offset: number,
+    lang: string,
+    search: string,
+    order_by: "ASC" | "DESC"
+  ) {
+    const result = await fontdb.Read(limit, offset, lang, search, order_by);
     return result;
   }
 }
