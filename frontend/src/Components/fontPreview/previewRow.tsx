@@ -44,7 +44,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
 
     useEffect(() => {
-        setTimeout(() => { setSampleText(previewText) }, 80)
+        setTimeout(() => { setSampleText(previewText) }, 60)
 
     }, [previewText])
     useEffect(() => {
@@ -64,7 +64,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
 
     const isSupported = (text: string,) => {
-        const canvasSize = 50;
+        const canvasSize = 150;
         const canvas = document.createElement("canvas");
         const refCanvas = document.createElement("canvas");
         canvas.width = refCanvas.width = canvas.height = refCanvas.height = canvasSize;
@@ -83,8 +83,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
             }
 
             const isCJK = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/.test(char);
-            const isDevanagari = /[\u0900-\u097F]/.test(char);
-            let fontSize = isCJK ? 5 : 40;
+            let fontSize = isCJK ? 5 : 150;
 
             ctx.font = `${fontSize}px '${fontName}', sans-serif`;
             refCtx.font = `${fontSize}px sans-serif`;
@@ -98,7 +97,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
 
             let mismatch = false;
-            if (isDevanagari) {
+            if (!isCJK) {
                 const width = ctx.measureText(char).width;
 
                 const refWidth = refCtx.measureText(char).width;
@@ -116,6 +115,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                     }
                 }
             }
+
             result += mismatch ? char : "\u29E0"; // ⧠
         }
 
@@ -161,7 +161,8 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                         backgroundColor: preview.backgroundColor,
 
                         mt: 1,
-                        minHeight: 80,
+                        p: 1.5,
+                        minHeight: 50,
                         display: 'flex',
                         borderRadius: 2,
 
@@ -170,7 +171,6 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                 >
                     <Typography
                         sx={{
-                            p: 3,
                             fontSize: preview.size,
                             color: preview.color,
                             fontFamily: fontName,
