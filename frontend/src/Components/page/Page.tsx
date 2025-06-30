@@ -6,11 +6,11 @@ import type { preview } from "../../types/previewTypes.ts";
 import ColorPicker from "../colorPicker/colorPicker.tsx";
 import { useSearchParams } from "react-router-dom";
 import LanguageList from "../langugeList/langugeList.tsx";
-import { Restore } from "@mui/icons-material";
+import { ArrowDropDown, PinDropSharp, Restore } from "@mui/icons-material";
 
 const initialPreview: preview = {
 
-    size: 14,
+    size: 30,
     color: "#000000",
     backgroundColor: "#FFFFFF"
 }
@@ -34,12 +34,10 @@ function Page() {
     const [preview, setPreview] = useState<preview>(param);
 
     useEffect(() => {
-
         searchParam.set("text", previewText);
         searchParam.set("color", preview.color);
         searchParam.set("bgColor", preview.backgroundColor);
         searchParam.set("size", preview.size.toString());
-
 
         const delay = setTimeout(() => {
             setParam(searchParam);
@@ -72,24 +70,43 @@ function Page() {
                     justifyContent: "center",
                     alignItems: "center"
                 }}>
-                    <TextField
-                        multiline
-                        fullWidth
-                        onFocus={() => setLanguage(true)}
-                        onBlur={() => {
-                            setTimeout(() => {
-                                setLanguage(false);
-                            }, 150);
-                        }}
-                        value={previewText}
-                        onChange={(e) => setPreviewText(e.target.value)}
-                        maxRows={6}
-                        minRows={5}
-                        variant="outlined"
-                        label="Enter text to preview"
-                        slotProps={{ htmlInput: { maxLength: 100 } }}
-                        sx={{ mb: 2, position: "sticky", top: 0 }}
-                    />
+                    <Box>
+                        <TextField
+                            multiline
+                            fullWidth
+                            onFocus={() => setLanguage(true)}
+                            onBlur={() => {
+                                setTimeout(() => {
+                                    setLanguage(false);
+                                }, 150);
+                            }}
+                            value={previewText}
+                            onChange={(e) => {
+                                const newValue = e.target.value;
+                                setPreviewText(newValue);
+                                setPreviewText(newValue),
+
+                                    newValue === "" ? setLanguage(true) : setLanguage(false)
+                            }}
+                            maxRows={6}
+                            minRows={5}
+                            variant="outlined"
+                            label="Enter text to preview"
+                            slotProps={{
+                                htmlInput: { maxLength: 100 },
+                                input: {
+                                    endAdornment: (<InputAdornment position="end" sx={{
+                                        pt: 15
+                                    }} ><ArrowDropDown fontSize="small" /></InputAdornment>)
+                                }
+                            }}
+
+                            sx={{
+
+                            }}
+
+                        />
+                    </Box>
                     {languageText && (
                         <Paper
                             sx={{
@@ -159,9 +176,12 @@ function Page() {
                         variant="standard"
                         value={preview.size}
                         onChange={(e) => setPreview({ ...preview, size: Number(e.target.value) })}
+                        sx={{
+                            "& input": { textAlign: "right" },
+                        }}
                         slotProps={{
                             htmlInput: { min: 8, max: 100, },
-                            input: { endAdornment: (<InputAdornment position="end">px</InputAdornment>) }
+                            input: { endAdornment: (<InputAdornment position="end" sx={{ ml: 0.5 }}>px</InputAdornment>) }
                         }}
 
                     />

@@ -1,7 +1,8 @@
-import { Box, Card, createTheme, CssBaseline, ThemeProvider, Typography } from "@mui/material";
+import { Box, Button, Card, createTheme, CssBaseline, IconButton, ThemeProvider, Typography } from "@mui/material";
 import type { preview } from "../../types/previewTypes.ts";
 import { API_URL } from "../../utils/config.ts";
 import { useEffect, useMemo, useState } from "react";
+import { ContentCopyRounded, CopyAllOutlined } from "@mui/icons-material";
 
 interface Font {
     id: number;
@@ -14,105 +15,108 @@ interface PreviewRowProps {
     preview: preview;
     img: Font;
     search: string;
-    lang: string
     setMissingGlyphs: (missingGlyphs: boolean) => void;
     viewMode?: 'row' | 'grid'
     onClickRow: (font: Font) => void
 }
 
 
-function PreviewRow({ previewText, preview, img, lang, setMissingGlyphs, viewMode, onClickRow, search }: PreviewRowProps) {
+function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onClickRow, }: PreviewRowProps) {
     const fontName = img.name;
     const [renderText, setRender] = useState("");
+    const [sampletext, setSampleText] = useState("")
     const fontUrl = `${API_URL}/static/${img.fileName}`;
 
-    const theme = useMemo(() => {
-        return createTheme({
-            components: {
-                MuiCssBaseline: {
-                    styleOverrides: `
-                        //     @font-face {
-                        //          font-family: '${fontName}';
-                        //         src: url('${fontUrl}') format('truetype');
-                        //         font-display: swap;
-                        //     }
-                        // `
-                }
+    const theme = createTheme({
+        components: {
+            MuiCssBaseline: {
+                styleOverrides: `
+                            @font-face {
+                                 font-family: '${fontName}';
+                                src: url('${fontUrl}') format('truetype');
+                                font-display: swap;
+                            }
+                        `
             }
-        });
-    }, [fontName, fontUrl]);
+        }
+    });
+
+
+
+    useEffect(() => {
+        setTimeout(() => { setSampleText(previewText) }, 80)
+
+    }, [previewText])
     useEffect(() => {
 
         setMissingGlyphs(false)
         const fontFace = new FontFace(fontName, `url(${fontUrl}) format('truetype')`);
         fontFace.load().then((loadedFace) => {
             document.fonts.add(loadedFace);
-            document.fonts.ready.then(() => {
-                const supportedText = isSupported(previewText);
-                setRender(supportedText);
-                const hasTofu = supportedText.includes('\u29E0');
-                if (hasTofu) setMissingGlyphs(hasTofu);
+            const supportedText = isSupported(sampletext);
+            const hasTofu = supportedText.includes('\u29E0');
+            if (hasTofu) setMissingGlyphs(hasTofu);
+            setRender(supportedText);
 
-            });
         });
-    }, [previewText, search]);
+
+    }, [sampletext, fontName]);
 
 
-    const isSupported = (text: string) => {
-        const canvasSize = 10;
+    const isSupported = (text: string,) => {
+        const canvasSize = 50;
         const canvas = document.createElement("canvas");
         const refCanvas = document.createElement("canvas");
         canvas.width = refCanvas.width = canvas.height = refCanvas.height = canvasSize;
 
         const ctx = canvas.getContext("2d")!;
         const refCtx = refCanvas.getContext("2d")!;
-
-
-
         ctx.textBaseline = refCtx.textBaseline = "top";
         ctx.fillStyle = refCtx.fillStyle = "black";
 
         let result = "";
+
         for (const char of text) {
-            const isCJK = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/.test(char);
-            let fontSize = 10;
-            if (isCJK) {
-                fontSize = 5;
-            }
             if (char.trim() === "") {
                 result += char;
                 continue;
             }
 
-            ctx.font = `${fontSize}px '${fontName}'`;
+            const isCJK = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/.test(char);
+            const isDevanagari = /[\u0900-\u097F]/.test(char);
+            let fontSize = isCJK ? 5 : 40;
+
+            ctx.font = `${fontSize}px '${fontName}', sans-serif`;
             refCtx.font = `${fontSize}px sans-serif`;
+
             ctx.clearRect(0, 0, canvasSize, canvasSize);
             refCtx.clearRect(0, 0, canvasSize, canvasSize);
 
             ctx.fillText(char, 0, 0);
             refCtx.fillText(char, 0, 0);
 
+
+
             let mismatch = false;
-            if (isCJK) {
-                const imageData = ctx.getImageData(0, 0, ctx.measureText(char).width, canvasSize).data;
-                const refData = refCtx.getImageData(0, 0, refCtx.measureText(char).width, canvasSize).data;
-                for (let j = 0; j < imageData.length; j++) {
-                    if (imageData[j] !== refData[j]) {
-                        mismatch = true;
-                        break;
-                    }
-                }
-            } else {
+            if (isDevanagari) {
                 const width = ctx.measureText(char).width;
 
                 const refWidth = refCtx.measureText(char).width;
                 if (width !== refWidth) {
                     mismatch = true;
                 }
+            } else {
+
+                const imageData = ctx.getImageData(0, 0, canvasSize, canvasSize).data;
+                const refData = refCtx.getImageData(0, 0, canvasSize, canvasSize).data;
+                for (let i = 0; i < imageData.length; i++) {
+                    if (imageData[i] !== refData[i]) {
+                        mismatch = true;
+                        break;
+                    }
+                }
             }
-
-
-            result += mismatch ? char : "\u29E0";
+            result += mismatch ? char : "\u29E0"; // ⧠
         }
 
         return result;
@@ -131,28 +135,26 @@ function PreviewRow({ previewText, preview, img, lang, setMissingGlyphs, viewMod
                     backgroundColor: 'background.paper',
 
                 }}>
-                <Box sx={{ display: "flex", flexDirection: "row", borderBottom: '1px solid #eee', alignItems: "flex-start", justifyContent: "left" }}>
+                <Box sx={{ display: "flex", flexDirection: "row", borderBottom: '1px solid #eee', alignItems: "center", justifyContent: "left" }}>
                     <Typography
-                        variant="body2"
                         sx={{
+                            fontFamily: fontName,
+                            fontSize: 25,
                             px: 1,
-                            py: 0.5,
-                            color: 'text.primary',
+                            color: "text.primary",
                             fontWeight: 500,
-
                         }}
                     >
                         {fontName}
-
                     </Typography>
-                    <Typography onClick={() => onClickRow(img)} variant="subtitle2" sx={{
-                        textTransform: "capitalize",
-                        cursor: "pointer",
-                        px: 1,
-                        py: 0.5,
-                        color: 'text.secondary',
-                        fontWeight: 500,
-                    }}>Embed</Typography>
+
+                    <IconButton
+                        onClick={() => onClickRow(img)}
+                        size="small"
+                        sx={{ p: 0.5, mt: "2px" }} // Fine-tuning spacing if needed
+                    >
+                        <ContentCopyRounded fontSize="small" />
+                    </IconButton>
                 </Box>
                 <Box
                     sx={{

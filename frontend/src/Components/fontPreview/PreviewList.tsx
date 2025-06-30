@@ -1,20 +1,19 @@
-import PreviewRow from "./previewRow.tsx";
 import type { preview } from "../../types/previewTypes.ts";
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import getFonts from "../../api/getFonts.ts";
-import { Button, ToggleButtonGroup, ToggleButton, Typography, Box, Drawer, TextField, InputAdornment, } from "@mui/material";
+import { Button, ToggleButtonGroup, ToggleButton, Typography, Box, Drawer, TextField, InputAdornment, Grid, } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
-import { Restore, Search, TableRows, ViewColumn, Warning, } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, GridView, Restore, Search, SortByAlpha, TableRows, ViewColumn, Warning, } from "@mui/icons-material";
 import Embed from "./embed.tsx";
 import { languageLists } from "../../constants/languageText.ts";
-
+import Loading from "../loading/loading.tsx";
+import PreviewRow from "./previewRow.tsx";
 
 type font = {
     id: number,
     name: string,
     fileName: string
 }
-
 
 function PreviewList({ previewText, preview, reset, setReset }: { previewText: string, preview: preview; reset: boolean; setReset: (val: boolean) => void }) {
     const [missingGlyphs, setMisssingGlyphs] = useState(false);
@@ -33,7 +32,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
     const [viewMode, setViewMode] = useState<'row' | 'grid'>('row');
     const [order_by, setOrderby] = useState<"ASC" | "DESC">("ASC");
     const [search, setSearch] = useState("");
-
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         if (reset) {
             setLanguage("");
@@ -47,17 +46,18 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
 
     useEffect(() => {
         const defaultText = "The quick brown fox jumps over the lazy dog.";
-
         if (previewText) {
             setSampleText(previewText);
             return;
         }
+        setTimeout(() => {
+            const matched = languageLists.find(
+                (langs) => langs.language.toLowerCase() === language?.toLowerCase()
+            )
+            setSampleText(matched?.text || defaultText);
+        }, 10);
 
-        const matched = languageLists.find(
-            (langs) => langs.language.toLowerCase() === language?.toLowerCase()
-        );
 
-        setSampleText(matched?.text || defaultText);
     }, [previewText, language]);
 
 
@@ -76,7 +76,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
 
         setMisssingGlyphs(false);
         const getFont = async () => {
-
+            setLoading(true)
             const result = await getFonts(limit, offset, language, search, order_by);
             if (result.status === 200) {
                 setImg(result.message.fonts);
@@ -85,10 +85,12 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
             if (img.length === 0) {
                 setError("Failed to load fonts")
             }
+            setLoading(false)
         };
 
         const delay = setTimeout(() => {
             getFont();
+
         }, 100)
         return () => clearTimeout(delay);
 
@@ -155,6 +157,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
             mx: 1,
             borderRadius: 1,
             position: "sticky",
+            zIndex: 1200,
             top: 0,
             gap: 2,
             alignItems: "center",
@@ -194,9 +197,6 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
                         input: {
                             startAdornment: (<InputAdornment position="start">
                                 <Search sx={{ fontSize: 20 }} />
-
-
-
                             </InputAdornment>)
                         }
                     }}
@@ -207,7 +207,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
                     onClick={() => setOrderby((prev) => (prev === "ASC" ? "DESC" : "ASC"))}
                     size="small"
                 >
-                    Sort: {order_by === "ASC" ? "A → Z" : "Z → A"}
+                    {order_by === "ASC" ? (<>A<ArrowForward fontSize="small" />Z</>) : (<>Z<ArrowForward fontSize="small" />A</>)}
                 </Button>
             </Box>
             {missingGlyphs && (
@@ -225,16 +225,13 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
                 size="small"
             >
                 <ToggleButton value="row" aria-label="Row View"><TableRows /></ToggleButton>
-                <ToggleButton value="grid" aria-label="Grid View"><ViewColumn /></ToggleButton>
+                <ToggleButton value="grid" aria-label="Grid View"><GridView /></ToggleButton>
             </ToggleButtonGroup>
-        </Box>
+        </Box >
 
             <Box
                 sx={{ display: "flex", flexDirection: "column", width: "100%", p: 1.5 }}
             >
-
-
-
                 {img.length > 0 ? (
                     <Box
                         pt={1}
@@ -245,18 +242,18 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
                             gap: 2,
                         }}
                     >  {img.map((item) => (
-                        <PreviewRow
-                            previewText={sampletext}
-                            key={item.id}
-                            preview={preview}
-                            search={search}
-                            img={item}
-                            lang={language}
-                            setMissingGlyphs={setMisssingGlyphs}
-                            viewMode={viewMode}
-                            onClickRow={handleRowClick}
-                        />
-                    ))}</Box>
+                        <Suspense fallback={<Loading />}>
+                            <PreviewRow
+                                previewText={sampletext}
+                                key={item.id}
+                                preview={preview}
+                                search={search}
+                                img={item}
+                                setMissingGlyphs={setMisssingGlyphs}
+                                viewMode={viewMode}
+                                onClickRow={handleRowClick}
+                            />
+                        </Suspense>))}</Box>
                 ) : (<>
                     <Box sx={{ textAlign: "center", mt: 4 }}>
                         <Typography
@@ -288,11 +285,9 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
                     open={Boolean(selectedFont)}
                     onClose={() => setSelectedFont(null)}
                 >
-                    <Embed selectedFont={selectedFont} />
+                    <Embed selectedFont={selectedFont} onClose={() => setSelectedFont(null)} />
 
                 </Drawer>
-
-
 
                 <Box
                     sx={{

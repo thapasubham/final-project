@@ -49,9 +49,10 @@ function ColorPicker({ color, label, onChange }: colorPickerProps) {
                         aria-label={`Select ${label.toLowerCase()}`}
                     />
                     <TextField value={colorValue} onChange={handleChange} sx={{
+                        p: 1,
 
                         '& input': {
-                            padding: '8.5px 8.5px 8.5px 0',
+                            padding: '8.5px 8.5px 8.5px 8.5px',
                             textTransform: 'uppercase'
                         }
                     }}

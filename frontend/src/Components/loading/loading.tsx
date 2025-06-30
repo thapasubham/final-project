@@ -1,4 +1,3 @@
-import { ArrowBackIosNewRounded } from "@mui/icons-material";
 import { CircularProgress, Container } from "@mui/material";
 
 function Loading() {
