@@ -4,11 +4,11 @@ import Page from "./Components/page/Page.tsx";
 
 function App() {
 
-    return(
+  return (
     <>
-      <Container maxWidth="sm">
-        <Page />
-      </Container>
+
+      <Page />
+
     </>
   )
 }

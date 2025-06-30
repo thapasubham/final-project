@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Font } from "../entity/font.js";
 import { FontService } from "../service/fontService.js";
+import { fonts } from "../const.js";
 
 export class FontsController {
   fontService: FontService;
@@ -8,29 +9,32 @@ export class FontsController {
     this.fontService = fs;
   }
   async CreateFont(req: Request, res: Response) {
-    const file = req.file;
-    console.log(file.filename);
-    const font = { ...req.body };
-    font.fileName = file.filename;
-    const result = await this.fontService.CreateFont(font);
-    res.send(result);
+    try {
+      const file = req.file;
+      let { lang_id, ...font } = req.body;
+      lang_id = lang_id.map((id: number) => Number(id));
+      font.fileName = file.filename;
+      const result = await this.fontService.CreateFont(font, lang_id);
+      res.send(result);
+    } catch (e) {
+      res.send(e.message);
+    }
   }
 
   async ReadFonts(req: Request, res: Response) {
     const offset = Number(req.query.offset) || 0;
     const limit = Number(req.query.limit) || 5;
-    const { filter } = req.query;
+    const { lang, search, order_by } = req.query;
 
-    const filters = filter ? (filter as string).split(",") : [];
-
-    const filename: Font[] = await this.fontService.ReadFont(
+    const langs = lang as string;
+    const fileName = await this.fontService.ReadFont(
       limit,
       offset,
-
-      filters
+      langs,
+      search as string,
+      order_by as "ASC" | "DESC"
     );
-
-    res.send(filename);
+    res.send(fileName);
   }
 
   async Filter(req: Request, res: Response) {

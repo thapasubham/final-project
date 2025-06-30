@@ -20,27 +20,46 @@ function ColorPicker({ color, label, onChange }: colorPickerProps) {
     return (
         <>
 
-            <Box sx={{ border: 1, padding: 1, borderRadius: 2, gap: 3 }}>
-                <Typography maxWidth={"auto"} color="textSecondary" component="div">
-                    {label}
-                </Typography>
-                <input
-                    type="color"
-                    value={colorValue}
-                    onChange={handleChange}
-                    style={{
-                        width: 60,
-                        height: 40,
-                        border: "none",
-                        backgroundColor: "transparent",
-                        cursor: "pointer",
-                        padding: 5
-                    }}
-                    aria-label="Select text color"
-                />
-                <TextField value={colorValue} onChange={handleChange} />
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start", gap: 1, p: 1 }}>                <Typography
+                variant="subtitle2"
+                color="text.secondary"
 
-            </Box>
+            >
+                {label}
+            </Typography>
+
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Box
+                        component="input"
+                        type="color"
+                        value={colorValue}
+                        onChange={handleChange}
+                        sx={{
+                            width: 50,
+                            height: 40,
+                            border: "none",
+                            borderRadius: 1,
+                            cursor: "pointer",
+                            padding: 0.5,
+                            backgroundColor: 'background.paper',
+                            '&:hover': {
+                                boxShadow: 1
+                            }
+                        }}
+                        aria-label={`Select ${label.toLowerCase()}`}
+                    />
+                    <TextField value={colorValue} onChange={handleChange} sx={{
+                        p: 1,
+
+                        '& input': {
+                            padding: '8.5px 8.5px 8.5px 8.5px',
+                            textTransform: 'uppercase'
+                        }
+                    }}
+
+                    />
+                </Box>
+            </Box >
         </>
     )
 }

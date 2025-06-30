@@ -1,16 +1,15 @@
 import express from "express";
 import cors from "cors";
-import { fontRoute } from "./api-routes/routes.js";
 import path, { dirname } from "path";
 import { fileURLToPath } from "url";
 import AppDataSource from "./data-source.js";
+import { fontRoute, langRoute } from "./api-routes/index.js";
 const startServer = () => {
   const app = express();
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
   const url = process.env.URL;
-  console.log(url);
   app.use(
     cors({
       origin: url,
@@ -19,6 +18,7 @@ const startServer = () => {
   );
 
   app.use("/api/font", fontRoute);
+  app.use("/api/lang", langRoute);
 
   const filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(filename);
