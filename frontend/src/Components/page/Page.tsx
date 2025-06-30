@@ -38,7 +38,18 @@ function Page() {
         searchParam.set("color", preview.color);
         searchParam.set("bgColor", preview.backgroundColor);
         searchParam.set("size", preview.size.toString());
-
+        if (previewText === "") {
+            searchParam.delete("text");
+        }
+        if (preview.size == initialPreview.size) {
+            searchParam.delete("size");
+        }
+        if (preview.color == initialPreview.color) {
+            searchParam.delete("color");
+        }
+        if (preview.backgroundColor == initialPreview.backgroundColor) {
+            searchParam.delete("bgColor");
+        }
         const delay = setTimeout(() => {
             setParam(searchParam);
         }, 200)
@@ -134,9 +145,10 @@ function Page() {
                         <Button
                             variant="text"
                             onClick={() => {
+                                setPreviewText("")
                                 setReset(true)
                                 setPreview(initialPreview);
-                                setPreviewText("")
+
 
                             }}
                             sx={{

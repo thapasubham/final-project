@@ -22,6 +22,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
     const [searchParam, setParam] = useSearchParams();
     const paramLang = searchParam.get("lang");
     const paramOffset = searchParam.get("offset");
+    const searchQ = searchParam.get("search");
     const [offset, setOffset] = useState(Number(paramOffset) || 0);
     const [selectedFont, setSelectedFont] = useState<font | null>(null);
     const [error, setError] = useState("")
@@ -31,16 +32,16 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
     const totalCount = useRef(0);
     const [viewMode, setViewMode] = useState<'row' | 'grid'>('row');
     const [order_by, setOrderby] = useState<"ASC" | "DESC">("ASC");
-    const [search, setSearch] = useState("");
-    const [loading, setLoading] = useState(false);
+    const [search, setSearch] = useState(() => searchQ ? searchQ : "");
     useEffect(() => {
         if (reset) {
             setLanguage("");
             setOffset(0);
             tempOffset.current = 0;
-            setReset(false);
             setOrderby("ASC")
             setSearch("")
+            setReset(false);
+
         }
     }, [reset, setReset]);
 
@@ -55,7 +56,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
                 (langs) => langs.language.toLowerCase() === language?.toLowerCase()
             )
             setSampleText(matched?.text || defaultText);
-        }, 10);
+        }, 50);
 
 
     }, [previewText, language]);
@@ -72,11 +73,16 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
         } else {
             searchParam.delete("lang");
         }
+        if (search) {
+            searchParam.set("search", search)
+        } else {
+            searchParam.delete("search")
+        }
         setParam(searchParam);
 
         setMisssingGlyphs(false);
         const getFont = async () => {
-            setLoading(true)
+
             const result = await getFonts(limit, offset, language, search, order_by);
             if (result.status === 200) {
                 setImg(result.message.fonts);
@@ -85,13 +91,12 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
             if (img.length === 0) {
                 setError("Failed to load fonts")
             }
-            setLoading(false)
         };
 
         const delay = setTimeout(() => {
             getFont();
 
-        }, 100)
+        }, 50)
         return () => clearTimeout(delay);
 
     }, [offset, language, search, order_by]);
@@ -122,7 +127,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
                 setOffset(0);
             }
 
-        }, 100)
+        }, 50)
         return () => clearTimeout(delay);
     };
     const handleRowClick = (font: font) => {
@@ -134,13 +139,13 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
 
 
         if (value !== "") {
-            tempOffset.current = offset;
+            if (tempOffset.current === 0) {
+                tempOffset.current = offset;
+            }
             setOffset(0);
-        }
-        if (value === "") {
+        } else {
             setOffset(tempOffset.current);
             tempOffset.current = 0;
-
         }
 
         setSearch(value);
