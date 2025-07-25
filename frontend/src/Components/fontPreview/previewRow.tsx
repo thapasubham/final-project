@@ -1,4 +1,4 @@
-import { Box, Button, Card, createTheme, CssBaseline, IconButton, ThemeProvider, Typography } from "@mui/material";
+import { Box, Button, Card, createTheme, CssBaseline, IconButton, Skeleton, ThemeProvider, Typography } from "@mui/material";
 import type { preview } from "../../types/previewTypes.ts";
 import { API_URL } from "../../utils/config.ts";
 import { useEffect, useMemo, useState } from "react";
@@ -26,6 +26,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
     const [renderText, setRender] = useState("");
     const [sampletext, setSampleText] = useState("")
     const fontUrl = `${API_URL}/static/${img.fileName}`;
+    const [isLoading, setIsLoading] = useState(true);
 
     const theme = createTheme({
         components: {
@@ -48,7 +49,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
     }, [previewText])
     useEffect(() => {
-
+        setIsLoading(true);
         setMissingGlyphs(false)
         const fontFace = new FontFace(fontName, `url(${fontUrl}) format('truetype')`);
         fontFace.load().then((loadedFace) => {
@@ -57,7 +58,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
             const hasTofu = supportedText.includes('\u29E0');
             if (hasTofu) setMissingGlyphs(hasTofu);
             setRender(supportedText);
-
+            setIsLoading(false);
         });
 
     }, [sampletext, fontName]);
@@ -81,6 +82,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                 result += char;
                 continue;
             }
+            const isDevanagari = /[\u0900-\u097F]/.test(char);
 
             const isCJK = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/.test(char);
             let fontSize = isCJK ? 5 : 150;
@@ -97,7 +99,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
 
             let mismatch = false;
-            if (!isCJK) {
+            if (isDevanagari) {
                 const width = ctx.measureText(char).width;
 
                 const refWidth = refCtx.measureText(char).width;
@@ -135,10 +137,22 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                     backgroundColor: 'background.paper',
 
                 }}>
-                <Box sx={{ display: "flex", flexDirection: "row", borderBottom: '1px solid #eee', alignItems: "center", justifyContent: "left" }}>
+                {isLoading ? (
+                    <Skeleton
+                        variant="text"
+                        width="100%"
+                        height={preview.size || 32}
+                        animation="wave"
+                        sx={{
+                            fontSize: preview.size,
+                            height: preview.size,
+                            lineHeight: `${preview.size}px`,
+                        }}
+                    />
+                ) : (<> <Box sx={{ display: "flex", flexDirection: "row", borderBottom: '1px solid #eee', alignItems: "center", justifyContent: "left" }}>
                     <Typography
                         sx={{
-                            fontFamily: fontName,
+
                             fontSize: 25,
                             px: 1,
                             color: "text.primary",
@@ -156,32 +170,33 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                         <ContentCopyRounded fontSize="small" />
                     </IconButton>
                 </Box>
-                <Box
-                    sx={{
-                        backgroundColor: preview.backgroundColor,
-
-                        mt: 1,
-                        p: 1.5,
-                        minHeight: 50,
-                        display: 'flex',
-                        borderRadius: 2,
-
-                        alignItems: 'center',
-                    }}
-                >
-                    <Typography
+                    <Box
                         sx={{
-                            fontSize: preview.size,
-                            color: preview.color,
-                            fontFamily: fontName,
-                            lineHeight: 1.4,
-                            wordBreak: 'break-word',
-                            width: '100%'
+                            backgroundColor: preview.backgroundColor,
+
+                            mt: 1,
+                            p: 1.5,
+                            minHeight: 50,
+                            display: 'flex',
+                            borderRadius: 2,
+
+                            alignItems: 'center',
                         }}
                     >
-                        {renderText}
-                    </Typography>
-                </Box>
+                        <Typography
+                            sx={{
+                                fontSize: preview.size,
+                                color: preview.color,
+                                fontFamily: fontName,
+                                lineHeight: 1.4,
+                                wordBreak: 'break-word',
+                                width: '100%'
+                            }}
+                        >
+                            {renderText}
+                        </Typography>
+                    </Box>
+                </>)}
             </Card>
         </ThemeProvider >
     );
