@@ -5,7 +5,7 @@ export const languageLists = [
   },
   {
     language: "Nepali",
-    text: "छिटो खैरो स्याल अल्छी कुकुरमाथि हाम फाल्छ।",
+    text: "मानव परिवारका सबै सदस्यहरूको अन्तर्निहित मान तथा सम्मान र",
   },
   {
     language: "Chinese",
