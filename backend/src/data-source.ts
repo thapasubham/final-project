@@ -1,6 +1,6 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { Font, Language } from "./entity/font.js";
+import { entities } from "./entity/table.js";
 
 const AppDataSource = new DataSource({
   // logging: true,
@@ -10,7 +10,7 @@ const AppDataSource = new DataSource({
   username: "postgres",
   password: "subham12",
   database: "fonts",
-  entities: [Font, Language],
+  entities: [...entities],
   migrations: ["src/migrations/*.ts"],
 });
 

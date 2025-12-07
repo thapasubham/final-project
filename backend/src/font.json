@@ -1,0 +1,23 @@
+[
+  { "name": "animeace2_reg", "fileName": "animeace2_reg.ttf", "lang_id": [1] },
+  { "name": "BarberChop", "fileName": "BarberChop.otf", "lang_id": [1] },
+  { "name": "Barriecito-Regular", "fileName": "Barriecito-Regular.ttf", "lang_id": [1] },
+  { "name": "BroncoPersonalUse", "fileName": "BroncoPersonalUse.ttf", "lang_id": [1] },
+  { "name": "burbank", "fileName": "burbank.otf", "lang_id": [1] },
+  { "name": "college", "fileName": "college.ttf", "lang_id": [1] },
+  { "name": "DelaGothicOne", "fileName": "DelaGothicOne.ttf", "lang_id": [1] },
+  { "name": "Gotu", "fileName": "Gotu.ttf", "lang_id": [1] },
+  { "name": "IBMPlexSans", "fileName": "IBMPlexSans.ttf", "lang_id": [1, 2] },
+  { "name": "Laila", "fileName": "Laila.ttf", "lang_id": [1] },
+  { "name": "lobster2.4", "fileName": "lobster2.4.otf", "lang_id": [1] },
+  { "name": "LongCang-Regular", "fileName": "LongCang-Regular.ttf", "lang_id": [1, 3] },
+  { "name": "MaShanZheng", "fileName": "MaShanZheng.ttf", "lang_id": [1, 3] },
+  { "name": "Matangi", "fileName": "Matangi.ttf", "lang_id": [1, 2] },
+  { "name": "Minecraft", "fileName": "Minecraft.ttf", "lang_id": [1] },
+  { "name": "MonsieurLaDoulaise", "fileName": "MonsieurLaDoulaise.ttf", "lang_id": [1] },
+  { "name": "NotoSansSC-VariableFont_wght", "fileName": "NotoSansSC-VariableFont_wght.ttf", "lang_id": [3] },
+  { "name": "Oswald", "fileName": "Oswald.ttf", "lang_id": [1] },
+  { "name": "Persona_Aura", "fileName": "Persona_Aura.otf", "lang_id": [1] },
+  { "name": "PlaypenSans", "fileName": "PlaypenSans.ttf", "lang_id": [1] },
+  { "name": "Poppins-Regular", "fileName": "Poppins-Regular.ttf", "lang_id": [1, 2] }
+]

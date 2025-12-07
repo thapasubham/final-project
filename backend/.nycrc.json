@@ -1,0 +1,16 @@
+{
+    "all": true,
+    "include":"src/app/**/*.ts",
+    "reporter": ["html", "text"],
+    "exclude": [
+        "src/app/**/schema.ts",
+        "src/app/**/cli.ts",
+        "src/app/**/*.route.ts",
+        "src/app/**/*.routes.ts",
+        "src/app/font.*",
+        "src/app/language.*",
+        "src/app/**/*.db.ts",
+        "src/app/**/index.ts"
+
+    ]
+}

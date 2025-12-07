@@ -8,10 +8,11 @@ export default async function getFonts(
   order_by: string
 ) {
   try {
-
+    
     const url = `${API_URL}/api/font?limit=${limit}&offset=${offset}&search=${search}&order_by=${order_by}&lang=${
       language || ""
     }`;
+    console.log(url)
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -19,6 +20,7 @@ export default async function getFonts(
       },
     });
     const result = await response.json();
+    console.log(result);
     return { status: response.status, message: result };
   } catch (e) {
     return { status: 500, message: (e as Error).message };

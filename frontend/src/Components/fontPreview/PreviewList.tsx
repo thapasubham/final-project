@@ -84,6 +84,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
         const getFont = async () => {
 
             const result = await getFonts(limit, offset, language, search, order_by);
+            console.log(result)
             if (result.status === 200) {
                 setImg(result.message.fonts);
                 totalCount.current = result.message.count;
@@ -96,7 +97,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
         const delay = setTimeout(() => {
             getFont();
 
-        }, 50)
+        }, 10)
         return () => clearTimeout(delay);
 
     }, [offset, language, search, order_by]);

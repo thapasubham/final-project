@@ -3,6 +3,7 @@ import type { preview } from "../../types/previewTypes.ts";
 import { API_URL } from "../../utils/config.ts";
 import { useEffect, useMemo, useState } from "react";
 import { ContentCopyRounded, CopyAllOutlined } from "@mui/icons-material";
+import { FontSkeleton } from "./FontSkeleton.tsx";
 
 interface Font {
     id: number;
@@ -45,7 +46,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
 
     useEffect(() => {
-        setTimeout(() => { setSampleText(previewText) }, 60)
+        setTimeout(() => { setSampleText(previewText) }, 0)
 
     }, [previewText])
     useEffect(() => {
@@ -138,18 +139,11 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
                 }}>
                 {isLoading ? (
-                    <Skeleton
-                        variant="text"
-                        width="100%"
-                        height={preview.size || 32}
-                        animation="wave"
-                        sx={{
-                            fontSize: preview.size,
-                            height: preview.size,
-                            lineHeight: `${preview.size}px`,
-                        }}
-                    />
-                ) : (<> <Box sx={{ display: "flex", flexDirection: "row", borderBottom: '1px solid #eee', alignItems: "center", justifyContent: "left" }}>
+                   <> 
+                  <FontSkeleton/>
+                    </>
+                ) : (<> 
+                <Box sx={{ display: "flex", flexDirection: "row", borderBottom: '1px solid #eee', alignItems: "center", justifyContent: "left" }}>
                     <Typography
                         sx={{
 
