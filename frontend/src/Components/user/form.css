@@ -1,0 +1,40 @@
+.user-form {
+    display: block;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #484848;
+    width: 300px;
+    margin: 20px auto;
+}
+
+.user-form form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.user-form label {
+    color: white;
+    font-weight: bold;
+    text-align: left;
+}
+
+.user-form input {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #333;
+    color: white;
+}
+
+.user-form input:focus {
+    outline: #00c4ff solid 1px;
+}
+.userType{
+    align-self: flex-start;
+    display: inline-block;
+}
+.show-password {
+    align-self: flex-start;
+    display: inline-block;
+}

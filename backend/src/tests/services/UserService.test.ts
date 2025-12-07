@@ -7,7 +7,6 @@ import { UserService } from "../../app/service/UserService";
 import { Role } from "../../entity/role.js";
 import { User } from "../../entity/user";
 
-
 describe("User Services tests", () => {
   const userService = new UserService();
 
@@ -103,7 +102,15 @@ describe("User Services tests", () => {
     describe("read users test suite", () => {
       it("No user Found", async () => {
         readUserStub.returns([]);
-        const result = await userService.ReadUsers("", "", "", 1, 5, "ASC", false);
+        const result = await userService.ReadUsers(
+          "",
+          "",
+          "",
+          1,
+          5,
+          "ASC",
+          false
+        );
         assert.deepEqual(result, []);
         Sinon.assert.calledOnce(readUserStub);
       });
@@ -162,7 +169,7 @@ describe("User Services tests", () => {
     let readUserStub: Sinon.SinonStub;
     let authSign: Sinon.SinonStub;
     beforeEach(() => {
-      authSign= Sinon.stub(Auth, "Sign");
+      authSign = Sinon.stub(Auth, "Sign");
       readUserStub = Sinon.stub(UserDb, "ReadUser");
     });
     afterEach(() => {
@@ -190,7 +197,7 @@ describe("User Services tests", () => {
       Sinon.assert.calledWith(readUserStub, 10);
     });
 
-    it("Refresh mentor", async () => {
+    it("Refresh", async () => {
       const user = {
         firstname: "John",
         lastname: "Black",
@@ -199,27 +206,22 @@ describe("User Services tests", () => {
         phoneNumber: "1248216745",
 
         role: {
-          permission: [
-            {name: "view"},
-            {name: "edit"},
-          ]
+          permission: [{ name: "view" }, { name: "edit" }],
         },
       };
       readUserStub.returns(user);
-      const token= {
+      const token = {
         bearerToken: "accessToken",
         refreshToken: "refreshToken",
-      }
+      };
       authSign.returns(token);
 
       const result = await userService.Refresh(user.id);
 
       assert.equal(result.id, user.id);
       assert.equal(result.signed_token, token);
-
-    })
+    });
   });
-
 
   describe("login test", () => {
     let loginStub: Sinon.SinonStub;

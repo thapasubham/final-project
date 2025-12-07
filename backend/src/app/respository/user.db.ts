@@ -4,16 +4,12 @@ import { constants } from "../../constants/constant";
 import AppDataSource from "../../data-source";
 import { User } from "../../entity/user";
 import { HttpError } from "../middleware/error";
-import { login } from "../../types/login.types";
+import { Login } from "../../types/login.types";
 import { DEFAULT_ROLE } from "../../types/permission.types";
 import { RolesDB } from "./roles.db";
 
-
-
-
 export class UserDb {
-
-static userRepository = AppDataSource.getRepository(User);
+  static userRepository = AppDataSource.getRepository(User);
   static async Createuser(user: User) {
     user.role = await RolesDB.getrolebyname(DEFAULT_ROLE);
     if (!user.password) {
@@ -24,7 +20,7 @@ static userRepository = AppDataSource.getRepository(User);
     }
 
     const entity = UserDb.userRepository.create(user);
-    return await  UserDb.userRepository.save(entity);
+    return await UserDb.userRepository.save(entity);
   }
 
   static async ReadUser(id: number) {
@@ -43,7 +39,6 @@ static userRepository = AppDataSource.getRepository(User);
           permission: true,
         },
         password: false,
-        isDeleted: false,
       },
     });
     if (!result) {
@@ -102,7 +97,6 @@ static userRepository = AppDataSource.getRepository(User);
     result.lastname = user.lastname;
     result.phoneNumber = user.phoneNumber;
     result.email = user.email;
-    result.isverified = user.isverified;
     result.password = user.password;
     result.role = user.role;
     const db_result = await UserDb.userRepository.save(result);
@@ -110,7 +104,10 @@ static userRepository = AppDataSource.getRepository(User);
   }
 
   static async DeleteUser(id: number) {
-    const user = await UserDb.userRepository.findOneBy({ id: id, isDeleted: false });
+    const user = await UserDb.userRepository.findOneBy({
+      id: id,
+      isDeleted: false,
+    });
 
     //if the user with given if found
     if (user) {
@@ -129,9 +126,9 @@ static userRepository = AppDataSource.getRepository(User);
     return result.affected;
   }
 
-  static async Login(user: login) {
+  static async Login(user: Login) {
     const result = await UserDb.userRepository.findOne({
-      where: { email: user.email, isverified: true },
+      where: { email: user.email },
       relations: {
         role: {
           permission: true,
@@ -142,12 +139,18 @@ static userRepository = AppDataSource.getRepository(User);
     if (!result) {
       throw new HttpError(constants.NO_USER, 404);
     }
-
+    console.log(result);
     await PasswordHasher.Compare(user.password, result.password);
 
     const id = result.id;
+    const roleName = result.role.name;
     const signed_token = Auth.Sign(id, result.role.id);
-    const permissionNames = result.role.permission.map((p) => p.name);
-    return { signed_token, permissions: permissionNames, id: result.id };
+    const permissionNames = result.role.permission.map((p) => p.name) || "edit";
+    return {
+      signed_token,
+      permissions: permissionNames,
+      id: result.id,
+      role: roleName,
+    };
   }
 }

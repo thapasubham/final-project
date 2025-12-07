@@ -1,0 +1,91 @@
+.user-table {
+    margin-top: 10px;
+    width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    background: #4b4a4a;
+    border-radius: 10px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+
+}
+
+.user-table thead {
+
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.user-table a:hover {
+  color:     white;
+}
+.user-table a:hover {
+    text-align: center;
+    color: hsl(185, 88%, 50%);
+}
+
+.list-filter input {
+    margin: 10px;
+    padding: 10px;
+    width: 50%;
+    border-radius: 5px;
+    border: none;
+    background-color: #333;
+    color: white;
+}
+.list-filter input:focus {
+
+    outline: solid 1px hsl(185, 88%, 50%);
+}
+.list-filter select {
+    padding: 10px;
+    width: 20%;
+    border-radius: 8px;
+    display: inline-block;
+    border: none;
+}
+.list-filter {
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+    background-color: #000000;
+}
+.list-filter select:after {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: hsl(0, 0%, 16%);
+    border: none;
+}
+.pagination{
+    background-color: #1a1a1a;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+.pagination button {
+    margin: 10px;
+    width: 20%;
+    display: inline;
+    background: #414141;
+}
+
+.pagination button:hover {
+    border: 1px solid #0858ee;
+    background: #2f2f2f
+}
+
+
+.action s button:hover {
+    border: 1px solid #4f4f4f;
+}
+.delete-button {
+    background: #202020;
+    margin: 5px;
+}
+.edit-button {border-radius: 10px;
+    background: #2a2a2a;
+    margin: 5px;
+}
+
+.verify-button {
+    border-radius: 10px;
+    background: #2a2a2a;
+}

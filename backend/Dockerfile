@@ -10,4 +10,4 @@ WORKDIR /app
 COPY --from=base /app/node_modules ./node_modules
 COPY . .
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
+CMD ["npm", "start"]

@@ -1,4 +1,4 @@
-import {  Request, Response } from "express";
+import { Request, Response } from "express";
 
 import { sanitizeInput } from "../middleware/sanitizeUser.js";
 import { UserService } from "../service/UserService.js";
@@ -105,7 +105,7 @@ export class UserController {
   async login(req: Request, res: Response) {
     const login = req.body;
     const result = await userService.Login(login);
-
+    console.log(result);
     ResponseApi.WriteResponse(res, { status: 200, data: result });
   }
 

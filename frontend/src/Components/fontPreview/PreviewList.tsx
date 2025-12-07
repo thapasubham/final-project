@@ -1,9 +1,9 @@
 import type { preview } from "../../types/previewTypes.ts";
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import getFonts from "../../api/getFonts.ts";
-import { Button, ToggleButtonGroup, ToggleButton, Typography, Box, Drawer, TextField, InputAdornment, Grid, } from "@mui/material";
+import { Button, ToggleButtonGroup, ToggleButton, Typography, Box, Drawer, TextField, InputAdornment, } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
-import { ArrowBack, ArrowForward, GridView, Restore, Search, SortByAlpha, TableRows, ViewColumn, Warning, } from "@mui/icons-material";
+import { ArrowForward, GridView, Restore, Search, TableRows, Warning, } from "@mui/icons-material";
 import Embed from "./embed.tsx";
 import { languageLists } from "../../constants/languageText.ts";
 import Loading from "../loading/loading.tsx";

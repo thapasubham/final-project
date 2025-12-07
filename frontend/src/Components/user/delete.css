@@ -1,0 +1,9 @@
+.delete-question {
+
+}
+.delete-confirm{
+    background-color: red;
+}
+.delete-confirm:hover{
+    background-color: #ff5a5a;
+}

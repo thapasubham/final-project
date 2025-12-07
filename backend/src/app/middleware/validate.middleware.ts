@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { User } from "../../entity/user.js";
 import { responseType, ResponseApi } from "../../utils/ApiResponse.js";
 import { parseBody } from "../../utils/utils.js";
-import { login } from "../../types/login.types.js";
+import { Login } from "../../types/login.types.js";
 import { error } from "../../types/signupError.types.js";
 
 export function validate(req: Request, res: Response, next: NextFunction) {
@@ -63,7 +63,7 @@ export function validateLogin(req: Request, res: Response, next: NextFunction) {
     message: "",
   };
 
-  const user: login = parseBody(req);
+  const user: Login = parseBody(req);
   if (!(user.email && user.password)) {
     response.message = "Missing fields";
     response.status = 400;

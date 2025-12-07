@@ -12,9 +12,11 @@
     "typeorm": "node --env-file=.env --loader ts-node/esm ./node_modules/typeorm/cli.js",
     "test": "c8  mocha src/tests/**/*.test.ts ",
     "migration:run": "npm run typeorm -- migration:run -d ./src/data-source.ts",
-    "migration:gen": "npm run typeorm -- migration:generate -d ./src/data-source.ts ./src/migrations/time",
+    "migration:gen": "npm run typeorm -- migration:generate -d ./src/data-source.ts src/migrations/time",
+   "migration:show": "npm run  typeorm -- migration:show -d ./src/data-source.ts",
     "migration:create": "npm run typeorm -- migration:create ./src/migrations/time"
   },
+
   "keywords": [],
   "author": "Subham Thapa",
   "license": "ISC",

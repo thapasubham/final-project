@@ -1,8 +1,8 @@
-import { Box, Button, Card, createTheme, CssBaseline, IconButton, Skeleton, ThemeProvider, Typography } from "@mui/material";
+import { Box, Card, createTheme, CssBaseline, IconButton, ThemeProvider, Typography } from "@mui/material";
 import type { preview } from "../../types/previewTypes.ts";
 import { API_URL } from "../../utils/config.ts";
-import { useEffect, useMemo, useState } from "react";
-import { ContentCopyRounded, CopyAllOutlined } from "@mui/icons-material";
+import { useEffect, useState } from "react";
+import { ContentCopyRounded } from "@mui/icons-material";
 import { FontSkeleton } from "./FontSkeleton.tsx";
 
 interface Font {
@@ -139,31 +139,31 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
                 }}>
                 {isLoading ? (
-                   <> 
-                  <FontSkeleton/>
+                    <>
+                        <FontSkeleton />
                     </>
-                ) : (<> 
-                <Box sx={{ display: "flex", flexDirection: "row", borderBottom: '1px solid #eee', alignItems: "center", justifyContent: "left" }}>
-                    <Typography
-                        sx={{
+                ) : (<>
+                    <Box sx={{ display: "flex", flexDirection: "row", borderBottom: '1px solid #eee', alignItems: "center", justifyContent: "left" }}>
+                        <Typography
+                            sx={{
 
-                            fontSize: 25,
-                            px: 1,
-                            color: "text.primary",
-                            fontWeight: 500,
-                        }}
-                    >
-                        {fontName}
-                    </Typography>
+                                fontSize: 25,
+                                px: 1,
+                                color: "text.primary",
+                                fontWeight: 500,
+                            }}
+                        >
+                            {fontName}
+                        </Typography>
 
-                    <IconButton
-                        onClick={() => onClickRow(img)}
-                        size="small"
-                        sx={{ p: 0.5, mt: "2px" }} // Fine-tuning spacing if needed
-                    >
-                        <ContentCopyRounded fontSize="small" />
-                    </IconButton>
-                </Box>
+                        <IconButton
+                            onClick={() => onClickRow(img)}
+                            size="small"
+                            sx={{ p: 0.5, mt: "2px" }} // Fine-tuning spacing if needed
+                        >
+                            <ContentCopyRounded fontSize="small" />
+                        </IconButton>
+                    </Box>
                     <Box
                         sx={{
                             backgroundColor: preview.backgroundColor,

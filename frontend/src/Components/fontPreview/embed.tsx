@@ -1,5 +1,5 @@
-import { Box, Typography, IconButton, Tooltip, Button } from "@mui/material";
-import { Close, CloseFullscreenOutlined, ContentCopy } from "@mui/icons-material";
+import { Box, Typography, IconButton, Tooltip } from "@mui/material";
+import { Close, ContentCopy } from "@mui/icons-material";
 import { API_URL } from "../../utils/config";
 import { useState } from "react";
 

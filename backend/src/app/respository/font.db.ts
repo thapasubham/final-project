@@ -16,41 +16,40 @@ export class fontdb {
 
     return result;
   }
-static async Read(
-  limit: number,
-  offset: number,
-  lang: string,
-  search: string,
-  order_by: "ASC" | "DESC",
-  mostPurchased: boolean 
-) {
-  let db = await respository
-    .createQueryBuilder("font")
-    .leftJoinAndSelect("font.langs", "language")
-    .leftJoin("font.purchases", "purchase") // join purchases table
-    .where("1=1");
+  static async Read(
+    limit: number,
+    offset: number,
+    lang: string,
+    search: string,
+    order_by: "ASC" | "DESC",
+    mostPurchased: boolean
+  ) {
+    let db = await respository
+      .createQueryBuilder("font")
+      .leftJoinAndSelect("font.langs", "language")
+      // .leftJoin("font.purchases", "purchase") // join purchases table
+      .where("1=1");
 
-  if (lang) {
-    db = db.andWhere("language.name = :lang", { lang });
+    if (lang) {
+      db = db.andWhere("language.name = :lang", { lang });
+    }
+
+    if (search) {
+      db = db.andWhere("font.name ILIKE :search", { search: `%${search}%` });
+    }
+
+    if (mostPurchased) {
+      db = db
+        .groupBy("font.id")
+        .addGroupBy("language.id")
+        .orderBy("COUNT(purchase.id)", "DESC");
+    } else {
+      const order = order_by === "DESC" ? "DESC" : "ASC";
+      db = db.orderBy("font.name", order);
+    }
+
+    const [result, count] = await db.take(limit).skip(offset).getManyAndCount();
+
+    return { fonts: result, count };
   }
-
-  if (search) {
-    db = db.andWhere("font.name ILIKE :search", { search: `%${search}%` });
-  }
-
-  if (mostPurchased) {
-    db = db
-      .groupBy("font.id")
-      .addGroupBy("language.id")
-      .orderBy("COUNT(purchase.id)", "DESC"); 
-  } else {
-    const order = order_by === "DESC" ? "DESC" : "ASC";
-    db = db.orderBy("font.name", order);
-  }
-
-  const [result, count] = await db.take(limit).skip(offset).getManyAndCount();
-
-  return { fonts: result, count };
-}
-
 }
