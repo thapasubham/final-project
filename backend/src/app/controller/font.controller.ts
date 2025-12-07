@@ -30,9 +30,8 @@ export class FontsController {
       offset,
       langs,
       search as string,
-      order_by as "ASC" | "DESC"
-      mostPurchased 
-      
+      order_by as "ASC" | "DESC",
+      mostPurchased      
     );
     res.send(fileName);
   }

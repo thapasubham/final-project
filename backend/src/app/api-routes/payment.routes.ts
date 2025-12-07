@@ -2,12 +2,13 @@ import { Request, Response } from "express";
 import Stripe from "stripe";
 import express from "express";
 
-const stripe = new Stripe("sk_test_51SakC0DutoXHECeqGMAvveu5g7UJ4rgZZHyCJohTId1gcbuiNSV54RT0VBChxh6FJIYYBSupwmhqYpGsu0dSrSKt00jv8RmVwd");
+const STRIPE_PRIVATE_KEY = process.env.STRIPE_PRIVATE_KEY
+const stripe = new Stripe(STRIPE_PRIVATE_KEY);
 const route = express.Router();
 
 route.post("/create_intent", async (req: Request, res: Response) => {
   const { amount } = req.body;
-
+  console.log(STRIPE_PRIVATE_KEY)
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount || 500, // default $5
