@@ -12,7 +12,7 @@ import { Role } from "./role.js";
 import { PasswordHasher } from "../app/auth/hash.js";
 
 @Entity()
-export class Details {
+export class User {
   @Index()
   @PrimaryColumn("bigint", { nullable: false })
   id?: number;
@@ -47,16 +47,4 @@ export class Details {
     }
     this.password = await PasswordHasher.Hash(this.password);
   }
-}
-
-@Entity()
-export class User extends Details {
-  @Column("boolean", { default: false })
-  isverified?: boolean;
-}
-
-@Entity()
-export class Mentor extends Details {
-  @Column("boolean", { default: true })
-  isverified?: boolean;
 }

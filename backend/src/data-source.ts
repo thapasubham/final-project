@@ -3,7 +3,6 @@ import { DataSource } from "typeorm";
 import { entities } from "./entity/table.js";
 
 const AppDataSource = new DataSource({
-  // logging: true,
   type: "postgres",
   host: process.env.DB_HOST,
   port: Number(process.env.DB_PORT),
