@@ -13,6 +13,7 @@ type font = {
     id: number,
     name: string,
     fileName: string
+    price: number
 }
 
 function PreviewList({ previewText, preview, reset, setReset }: { previewText: string, preview: preview; reset: boolean; setReset: (val: boolean) => void }) {

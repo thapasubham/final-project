@@ -9,7 +9,7 @@
     "compress": "tsx src/compress.ts",
     "dev": "tsx --watch --env-file=.env src/index.ts",
     "lint": "eslint",
-    "typeorm": "node --env-file=.env --loader ts-node/esm ./node_modules/typeorm/cli.js",
+    "typeorm": "node --env-file=.env.local --loader ts-node/esm ./node_modules/typeorm/cli.js",
     "test": "c8  mocha src/tests/**/*.test.ts ",
     "migration:run": "npm run typeorm -- migration:run -d ./src/data-source.ts",
     "migration:gen": "npm run typeorm -- migration:generate -d ./src/data-source.ts src/migrations/time",

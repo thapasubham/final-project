@@ -8,8 +8,7 @@ import {
 
 @Entity("font")
 export class Font {
- 
- @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn()
   id?: number;
 
   @Column("varchar", { nullable: false, unique: true })
@@ -17,6 +16,9 @@ export class Font {
 
   @Column("varchar", { nullable: false })
   fileName: string;
+
+  @Column("numeric", { default: 5 })
+  price: number;
 
   @ManyToMany(() => Language)
   @JoinTable()

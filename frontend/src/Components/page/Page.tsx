@@ -61,9 +61,8 @@ function Page() {
             display: "flex",
             flexDirection: "row",
             justifyContent: "flex-start",
-            width: "100vw",
+            width: "100%",
             height: "100vh",
-            overflow: "hidden"
         }}>
             {/* Controls Panel - Fixed width */}
             <Paper sx={{
@@ -123,6 +122,7 @@ function Page() {
                             sx={{
                                 overflow: "auto",
                                 maxHeight: 150,
+                                position: "sticky"
                             }}>
                             <LanguageList userText={previewText}
                                 onSelect={(selectedText) => {
@@ -211,11 +211,11 @@ function Page() {
             </Paper >
 
             {/* Preview Area - Takes remaining space */}
-            < Box sx={{
-                width: "100vw",
-                overflow: "auto",
-            }
-            }>
+            <Box sx={{
+                flexGrow: 1,
+                overflow: "auto"
+            }}>
+
                 <PreviewList previewText={previewText} preview={preview} reset={reset} setReset={setReset} />
             </Box >
 

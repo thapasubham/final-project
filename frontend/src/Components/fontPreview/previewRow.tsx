@@ -9,6 +9,7 @@ interface Font {
     id: number;
     name: string;
     fileName: string;
+    price: number
 }
 
 interface PreviewRowProps {
@@ -69,10 +70,12 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
         const canvasSize = 150;
         const canvas = document.createElement("canvas");
         const refCanvas = document.createElement("canvas");
+
         canvas.width = refCanvas.width = canvas.height = refCanvas.height = canvasSize;
 
-        const ctx = canvas.getContext("2d")!;
-        const refCtx = refCanvas.getContext("2d")!;
+        const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
+        const refCtx = refCanvas.getContext("2d", { willReadFrequently: true })!;
+
         ctx.textBaseline = refCtx.textBaseline = "top";
         ctx.fillStyle = refCtx.fillStyle = "black";
 
@@ -154,6 +157,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                             }}
                         >
                             {fontName}
+
                         </Typography>
 
                         <IconButton
@@ -190,6 +194,9 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                             {renderText}
                         </Typography>
                     </Box>
+                    <Typography sx={{ mt: 1, fontWeight: 600 }}>
+                        {img.price}$
+                    </Typography>
                 </>)}
             </Card>
         </ThemeProvider >
