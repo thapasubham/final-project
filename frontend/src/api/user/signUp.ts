@@ -15,7 +15,7 @@ async function signUp(user: userPayload, users: string) {
 
   try {
     //perform api request here
-    const url = `${API_URL}/api/${users || "users"}`;
+    const url = `${API_URL}/api/users}`;
 
     const result = await axios.post(url, payload);
     const { data } = result;

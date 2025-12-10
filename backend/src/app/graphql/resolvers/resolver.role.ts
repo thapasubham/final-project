@@ -1,6 +1,6 @@
 export const roleResolvers = {
   Query: {
-    async roles(_: any, {}: any, { dataSource }: any) {
+    async roles(_: any, { }: any, { dataSource }: any) {
       return dataSource.roleService.ReadRoles();
     },
     async role(_: any, { id }: any, { dataSource }: any) {

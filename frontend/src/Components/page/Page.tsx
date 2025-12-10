@@ -65,14 +65,16 @@ function Page() {
             height: "100vh",
         }}>
             {/* Controls Panel - Fixed width */}
-            <Paper sx={{
-                p: 1,
-                width: "20%",
-                height: "100%",
-                m: 0,
-                borderRadius: 0,
-                boxShadow: 3
+           <Paper sx={{
+            p: 1,
+            width: "15%",
+            height: "100%",
+            m: 0,
+            borderRadius: 0,
+            boxShadow: 3,
+            flexShrink: 0 // Prevent shrinking when content grows
             }}>
+
                 <Box sx={{
                     display: "flex",
                     flexDirection: "column",
@@ -212,8 +214,8 @@ function Page() {
 
             {/* Preview Area - Takes remaining space */}
             <Box sx={{
-                flexGrow: 1,
-                overflow: "auto"
+                width: "100%",
+overflow: "auto"
             }}>
 
                 <PreviewList previewText={previewText} preview={preview} reset={reset} setReset={setReset} />

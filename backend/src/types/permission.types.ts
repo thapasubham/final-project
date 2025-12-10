@@ -6,6 +6,7 @@ export enum PermissionType {
   ADMIN_ADD = "admin:add",
   ADMIN_EDIT = "admin:edit",
   ADMIN_DELETE = "admin:delete",
+  FONT_UPLOAD = "font:upload",
 }
 
 export const DEFAULT_ROLE = "default";

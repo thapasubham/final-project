@@ -8,6 +8,7 @@
     "insert-font": "tsx --env-file=.env src/insert.ts",
     "compress": "tsx src/compress.ts",
     "dev": "tsx --watch --env-file=.env src/index.ts",
+    "local": "tsx --watch --env-file=.env.local src/index.ts",
     "lint": "eslint",
     "typeorm": "node --env-file=.env.local --loader ts-node/esm ./node_modules/typeorm/cli.js",
     "test": "c8  mocha src/tests/**/*.test.ts ",

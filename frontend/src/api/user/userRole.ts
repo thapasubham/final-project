@@ -1,8 +1,8 @@
 import { SOMETHING_WENT_WRONG } from "../../constants/constant.ts";
 import { API_URL } from "../../utils/config.ts";
 
-export async function userRole(id: number, users: string) {
-  const url = `${API_URL}/graphql`;
+export async function userRole(id: number) {
+  const url = `${API_URL}/api/graphql`;
 
   const query = `
     query user($id: ID!){ 
@@ -11,7 +11,7 @@ export async function userRole(id: number, users: string) {
     name
     }
     
-       user: get${users}(id: $id){
+       user: getuser(id: $id){
        id
             firstname
             lastname
@@ -24,7 +24,7 @@ export async function userRole(id: number, users: string) {
     }`;
 
   const variables = {
-    id: id,
+    id: id.toString(),
   };
   const result = await fetch(url, {
     method: "POST",

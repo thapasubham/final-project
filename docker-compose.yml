@@ -5,13 +5,14 @@ services:
     image: postgres
     restart: unless-stopped
     ports: 
-      - "8000:5432"
+      - "8001:5432"
     environment:
       POSTGRES_PASSWORD: subham12
+      TZ: Asia/Kathmandu
     networks:
       - font
     volumes:
-      - db:/var/lib/postgresql
+      - db:/var/lib/postgresql/
 
   backend:
     depends_on:

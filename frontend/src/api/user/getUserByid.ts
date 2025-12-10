@@ -1,11 +1,10 @@
 import { API_URL } from "../../utils/config.ts";
 import { config, getCookie } from "../apiHelpers.ts";
 
-export async function getUserByid(id: number, userType: string) {
+export async function getUserByid(id: number, ) {
   try {
     //make api call here
-    console.log(id, userType);
-    const url = `${API_URL}/api/${userType}/${id}`;
+    const url = `${API_URL}/api/users/${id}`;
     console.log(url);
     const bearerToken = getCookie("bearerToken") as string;
     const result = await fetch(url, {

@@ -10,7 +10,7 @@ const router = express.Router();
 const permissionController = new PermissionController();
 router.get(
   "/",
-  // Auth.isAuthorized(PermissionType.ADMIN_VIEW),
+  Auth.isAuthorized(PermissionType.ADMIN_VIEW),
   permissionController.ReadPermissions
 );
 router.get(

@@ -17,7 +17,7 @@ export const userResolvers = {
 
       return result;
     },
-    async getusers(_: any, { id }: any, { dataSource }: any) {
+    async getuser(_: any, { id }: any, { dataSource }: any) {
       const getUser = await dataSource.userService.ReadUser(parseInt(id));
 
       return getUser;

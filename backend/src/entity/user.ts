@@ -7,6 +7,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Role } from "./role.js";
 import { PasswordHasher } from "../app/auth/hash.js";
@@ -14,8 +15,8 @@ import { PasswordHasher } from "../app/auth/hash.js";
 @Entity()
 export class User {
   @Index()
-  @PrimaryColumn("bigint", { nullable: false })
-  id?: number;
+@PrimaryGeneratedColumn()
+id?: number;
 
   @Column("varchar", { length: 30, nullable: false })
   firstname: string;

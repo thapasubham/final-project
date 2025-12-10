@@ -9,29 +9,30 @@ import { ApolloServer } from "@apollo/server";
 import typeDefs from "./app/graphql/schema.js";
 import { resolvers } from "./app/graphql/resolvers/index.js";
 import { errorHandler } from "./app/middleware/error.js";
-import dataSource from "./data-source.js";
 import cookieparser from "cookie-parser";
+import { seedAdminRole, seedAdminUser, seedPermission } from "./seed/seed.js";
+import { gql_dataSource } from "./app/graphql/datasource/index.js";
 
 async function startServer() {
   const app = express();
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  const url = process.env.URL;
+  const frontendUrl = process.env.URL || "http://localhost:5000";
+
   app.use(
     cors({
-      origin: "*",
-      credentials: true,
+      origin: frontendUrl, // must match frontend exactly
+      credentials: true,   // allow cookies/auth headers
     })
   );
-
   app.use("/api/font", routes.fontRoute);
   app.use("/api/lang", routes.langRoute);
   app.use("/api/payment", routes.payment);
 
   app.use("/api/users", routes.userRouter);
   app.use("/api/roles", routes.rolesRoutes);
-  app.use("/api/permission", routes.permissionRoutes);  
+  app.use("/api/permission", routes.permissionRoutes);
   app.use(express.json());
   app.use(cookieparser());
 
@@ -47,7 +48,7 @@ async function startServer() {
     "/api/graphql",
     expressMiddleware(server, {
       context: async () => ({
-        dataSource,
+        dataSource: gql_dataSource,
       }),
     }) as any
   );
@@ -73,7 +74,12 @@ async function startServer() {
 AppDataSource.initialize()
   .then(async () => {
     console.log("Data Source has been initialized!");
-     startServer();
+    seedPermission()
+
+    seedAdminRole();
+
+    startServer();
+    seedAdminUser()
   })
   .catch((err) => {
     console.error("Error during Data Source initialization:", err);

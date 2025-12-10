@@ -3,10 +3,15 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext.tsx";
 
 function NavBar() {
-    const { isLogged, userID, userStatus } = useAuth();
+    const { isLogged, userID } = useAuth();
 
     return (
-        <AppBar position="static">
+        <AppBar position="sticky" sx={{
+            zIndex: 13000,
+            widows: "50vw",
+            borderRadius: 2,
+
+        }}>
             <Toolbar>
 
                 {/* Left section (logo or home link) */}
@@ -46,7 +51,7 @@ function NavBar() {
 
                         <Button
                             component={Link}
-                            to={`/profile/${userID}/${userStatus}`}
+                            to={`/profile/${userID}`}
                             color="inherit"
                         >
                             Profile

@@ -16,19 +16,13 @@ import { useAuth } from "../../auth/AuthContext.tsx";
 import { UserType } from "../../types/userType.ts";
 
 export function Profile() {
-    const { id, userType } = useParams();
-    const { userID, userStatus } = useAuth();
+    const { id } = useParams();
     const navigate = useNavigate();
 
-    const [user, setUser] = useState({
-        id: 0,
-        firstname: "",
-        lastname: "",
-        email: "",
-        phoneNumber: "",
-    });
+    const { userID, userStatus } = useAuth();
 
-    const [role, setRole] = useState({ name: "" });
+    const [user, setUser] = useState<any>(null);
+    const [role, setRole] = useState<any>(null);
 
     const [loading, setLoading] = useState(false);
     const [allowEdit, setAllowEdit] = useState(false);
@@ -37,68 +31,59 @@ export function Profile() {
 
     const fetchUser = async () => {
         setLoading(true);
-
         try {
-            const response = await getUserByid(Number(id), userType);
+            const response = await getUserByid(Number(id));
 
             if (response.status === 200) {
                 const data = response.data;
 
-                setUser((prev) => ({ ...prev, ...data }));
-                setRole((prev) => ({ ...prev, ...data.role }));
-
-                if (userStatus === UserType.ADMIN || userID === data.id) {
-                    setAllowEdit(true);
-                }
+                setUser(data);
+                setRole(data.role);
+                setAllowEdit(
+                    userStatus === UserType.ADMIN || Number(userID) === data.id
+                );
 
                 setError("");
-                setLoading(false);
-            }
-
-            if (response.status === 401 && !retry) {
+            } else if (response.status === 401 && !retry) {
+                // Attempt token refresh
                 const result = await Refresh(userStatus);
-
                 if (result) {
                     setRetry(true);
-                    setError("");
                 } else {
                     navigate("/login");
                 }
             } else {
-                const message = response.data.message;
-                setLoading(false);
-                setError(message);
+                setError(response.data?.message || "Failed to load user.");
             }
-        } catch (e) {
-            setError((e as Error).message);
+        } catch (e: any) {
+            setError(e.message);
+        } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
         fetchUser();
-    }, [retry, id, userType]);
+    }, [retry, id]);
 
     return (
         <Box sx={{ maxWidth: 500, mx: "auto", mt: 6 }}>
-
-            <Typography variant="h5" mb={2} align="center">
+            <Typography variant="h5" mb={3} align="center" fontWeight={600}>
                 Profile
             </Typography>
 
             {loading && (
-                <Box textAlign="center">
+                <Box textAlign="center" mb={2}>
                     <CircularProgress />
                 </Box>
             )}
 
-            {error && <Alert severity="error">{error}</Alert>}
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-            {!loading && !error && (
+            {!loading && !error && user && (
                 <Card elevation={3}>
                     <CardContent>
-
-                        {/* NAME + EDIT BUTTON */}
+                        {/* Name + Edit Button */}
                         <Box
                             sx={{
                                 display: "flex",
@@ -114,7 +99,7 @@ export function Profile() {
                             {allowEdit && (
                                 <Button
                                     component={Link}
-                                    to={`/editUser/${user.id}/${userType}`}
+                                    to={`/editUser/${user.id}`}
                                     variant="contained"
                                     size="small"
                                 >
@@ -123,21 +108,20 @@ export function Profile() {
                             )}
                         </Box>
 
-                        {/* EMAIL */}
+                        {/* Email */}
                         <Typography variant="body1" sx={{ mb: 1 }}>
                             <strong>Email:</strong> {user.email}
                         </Typography>
 
-                        {/* PHONE */}
+                        {/* Phone */}
                         <Typography variant="body1" sx={{ mb: 1 }}>
                             <strong>Phone:</strong> {user.phoneNumber}
                         </Typography>
 
-                        {/* ROLE */}
+                        {/* Role */}
                         <Typography variant="body1">
-                            <strong>Role:</strong> {role?.name || "Unknown"}
+                            <strong>Role:</strong> {role?.name === "default" ? "User" : role?.name || "Unknown"}
                         </Typography>
-
                     </CardContent>
                 </Card>
             )}

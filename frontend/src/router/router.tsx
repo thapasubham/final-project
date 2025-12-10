@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import About from "../Components/about/About";
-import Home from "../Components/home";
 import { SignUp, Login, Logout, EditUser } from "../Components/user/index"
 import PageNotFound from "../Components/PageNotFound.tsx";
 import DashBoard from "../Components/dashboard/DashBoard.tsx";
@@ -24,9 +23,9 @@ export function Router() {
                 <Route path='/signup' Component={SignUp} />
                 <Route path='*' Component={PageNotFound} />
                 <Route path='/create' Component={CreateUser} />
-                <Route path='/editUser/:id/:userType' Component={EditUser} />
-                <Route path='/delete/:id/:userType' Component={DeleteUser} />
-                <Route path='/profile/:id/:userType' Component={Profile} />
+                <Route path='/editUser/:id' Component={EditUser} />
+                <Route path='/delete/:id' Component={DeleteUser} />
+                <Route path='/profile/:id' Component={Profile} />
 
             </Routes>
         </BrowserRouter>

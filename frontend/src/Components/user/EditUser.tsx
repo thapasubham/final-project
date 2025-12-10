@@ -1,199 +1,213 @@
-import React, {useEffect,  useState} from "react";
-import { editUser } from "../../api/user/editUser.ts";
-import {useNavigate, useParams } from "react-router-dom";
-import {Refresh} from "../../api/refresh/refresh.ts";
-import {useAuth} from "../../auth/AuthContext.tsx";
-import {userErrorType} from "../../validation/userFormError.types.ts";
-import { validateCreate, sanitizeInput} from "../../validation/validateCreate.ts";
-import {userRole} from "../../api/user/userRole.ts";
-import {Role} from "../../types/Role.ts";
-import {UserType} from "../../types/userType.ts";
-import {Button, InputLabel, MenuItem, NativeSelect, Select} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+    Box,
+    Button,
+    TextField,
+    Typography,
+    Alert,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Stack,
+} from "@mui/material";
 
-function EditUser() {
-    const { id, userType } = useParams();
-  const { userStatus } = useAuth()
-    const [retry,setRetry]= useState(0)
-    const [form, setForm] = useState(
-        {
-            id: Number(id),
-            firstname: "",
-            lastname: "",
-            phoneNumber: "",
-            email: "",
-            role: 0
-        });
-  const [roles, setRole] = useState<Role[]>([])
-  const maxRetry = 1;
-    const [error, setError] = useState("");
+import { editUser } from "../../api/user/editUser.ts";
+import { userRole } from "../../api/user/userRole.ts";
+import { Refresh } from "../../api/refresh/refresh.ts";
+import { useAuth } from "../../auth/AuthContext.tsx";
+import { sanitizeInput, validateCreate } from "../../validation/validateCreate.ts";
+import { UserType } from "../../types/userType.ts";
+import { Role } from "../../types/Role.ts";
+import { userErrorType } from "../../validation/userFormError.types.ts";
+
+export function EditUser() {
+    const { id } = useParams();
+    const { userStatus } = useAuth();
+    const navigate = useNavigate();
+
+    const [form, setForm] = useState({
+        id: Number(id),
+        firstname: "",
+        lastname: "",
+        email: "",
+        phoneNumber: "",
+        role: 0,
+    });
+
+    const [roles, setRoles] = useState<Role[]>([]);
     const [formError, setFormError] = useState<userErrorType>({
         firstname: "",
         lastname: "",
         email: "",
         phoneNumber: "",
     });
-    const navigate = useNavigate();
 
-    const refresh =async () =>{
+    const [error, setError] = useState("");
+    const [retry, setRetry] = useState(0);
+    const maxRetry = 1;
 
-        setRetry(retry+1);
-            const result = await  Refresh(userStatus);
-            if (result) {
-                setRetry(0);
-                setError("");
-                return true;
-            } else  {
-                navigate("/login");
-            }
-    }
+    const refresh = async () => {
+        setRetry(retry + 1);
+        const result = await Refresh(userStatus);
+        if (result) {
+            setRetry(0);
+            setError("");
+            return true;
+        } else {
+            navigate("/login");
+        }
+    };
+
     const fetchUser = async () => {
-
         try {
-            const response = await userRole(form.id, userType as string);
-
-
-            if (response.status===200) {
-                const {user,roles} = response.data;
-
-
+            console.log(id);
+            const response = await userRole(Number(id));
+            console.log(response.data); 
+            if (response.status === 200) {
+                const { user, roles } = response.data;
                 setForm({
                     id: Number(user.id),
                     firstname: user.firstname,
                     lastname: user.lastname,
-                    phoneNumber: user.phoneNumber,
                     email: user.email,
-                    role: user.role.id
+                    phoneNumber: user.phoneNumber,
+                    role: user.role.id,
                 });
-
-
-                setRole(roles);
+                setRoles(roles);
                 setError("");
             }
-
-
-
         } catch (e) {
-            setError(()=>(e as Error).message);
+            setError((e as Error).message);
         }
-
     };
 
     useEffect(() => {
         fetchUser();
-
     }, []);
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | any) => {
+        const { name, value } = e.target;
+        setForm({ ...form, [name]: name === "role" ? Number(value) : value });
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setRetry(0);
         setError("");
-        const payload = sanitizeInput(form)
-        const errors = validateCreate(payload);
-        setFormError({...formError, ...errors});
-        const hasErrors = Object.values(errors).some((msg) => msg !== "");
-        if(hasErrors) {
 
-            return;
-        }
+        const payload = sanitizeInput(form);
+        const errors = validateCreate(payload);
+        setFormError({ ...formError, ...errors });
+
+        if (Object.values(errors).some((msg) => msg !== "")) return;
 
         try {
-            //calling the function that does api call
-            const result = await editUser(payload, userType as string);
-
-
+            const result = await editUser(payload);
             if (result.status === 200) {
                 alert(result.message);
-                setError("");
                 navigate("/dashboard");
-            }
-            else if (result.status === 409) {
-                setFormError({...formError, ...result.message});
-                return;
-            }
-
-            if(result.status===401 && retry<maxRetry) {
+            } else if (result.status === 409) {
+                setFormError({ ...formError, ...result.message });
+            } else if (result.status === 401 && retry < maxRetry) {
                 await refresh();
             }
-        }catch (e)
-        {
+        } catch (e) {
             setError((e as Error).message);
         }
+    };
 
-    }
-    const handleChange = (e: any) => {
-        const { name, value } = e.target;
-        setForm({ ...form, [name]: name==="role"? Number(value):value });
-
-    }
     return (
-        <>
-            {error && (<p data-testid="error" className="errorMessage">{error}</p>)}
-            <div className="user-form">
-                <h3>Edit Details</h3>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="edit-firstname">Firstname</label>
-                    <input
-                        data-testid="edit-firstname"
-                        type="text"
-                        name="firstname"
-                        value={form.firstname}
-                        onChange={handleChange}
-                        required
-                    />
+        <Box
+            sx={{
+                maxWidth: 450,
+                mx: "auto",
+                mt: 6,
+                p: 4,
+                boxShadow: 3,
+                borderRadius: 2,
+            }}
+            component="form"
+            onSubmit={handleSubmit}
+        >
+            <Typography variant="h5" mb={3} textAlign="center">
+                Edit User Details
+            </Typography>
 
-                    {formError.firstname&& (<p className="formError">{formError.firstname}</p>)}
-                    <label htmlFor="edit-lastname">Lastname</label>
-                    <input
-                        data-testid="edit-lastname"
-                        type="text"
-                        name="lastname"
-                        value={form.lastname}
-                        onChange={handleChange}
-                        required
-                    />
-                    {formError.lastname&& (<p className="formError">{formError.lastname}</p>)}
-                    <label htmlFor="edit-email">Email</label>
-                    <input
-                        data-testid="edit-email"
-                        type="email"
-                        name="email"
-                        value={form.email}
-                        onChange={handleChange}
-                        required
-                    />
-                    {formError.email&& (<p className="formError">{formError.email}</p>)}
+            {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-                    <label htmlFor="edit-phoneNumber">Phone no</label>
-                    <input
-                        data-testid="edit-phoneNumber"
-                        type="text"
-                        name="phoneNumber"
-                        value={form.phoneNumber}
-                        onChange={handleChange}
-                        required
-                    />
-                    {formError.phoneNumber&& (<p className="formError">{formError.phoneNumber}</p>)}
-                    {userStatus ===UserType.ADMIN &&  (
-                        <><InputLabel variant="standard" htmlFor="uncontrolled-native">
-                            Role
-                        </InputLabel><NativeSelect
-                            size="small"
+            <Stack spacing={2}>
+                <TextField
+                    fullWidth
+                    label="Firstname"
+                    name="firstname"
+                    value={form.firstname}
+                    onChange={handleChange}
+                    error={!!formError.firstname}
+                    helperText={formError.firstname}
+                />
 
-                            id="role" name="role" value={form.role} onChange={handleChange}>
-                            <option value="" disabled>Select role</option>
+                <TextField
+                    fullWidth
+                    label="Lastname"
+                    name="lastname"
+                    value={form.lastname}
+                    onChange={handleChange}
+                    error={!!formError.lastname}
+                    helperText={formError.lastname}
+                />
+
+                <TextField
+                    fullWidth
+                    label="Email"
+                    name="email"
+                    type="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    error={!!formError.email}
+                    helperText={formError.email}
+                />
+
+                <TextField
+                    fullWidth
+                    label="Phone Number"
+                    name="phoneNumber"
+                    value={form.phoneNumber}
+                    onChange={handleChange}
+                    error={!!formError.phoneNumber}
+                    helperText={formError.phoneNumber}
+                />
+
+                {userStatus === UserType.ADMIN && (
+                    <FormControl fullWidth>
+                        <InputLabel id="role-label">Role</InputLabel>
+                        <Select
+                            labelId="role-label"
+                            id="role"
+                            name="role"
+                            value={form.role}
+                            onChange={handleChange}
+                            required
+                        >
+                            <MenuItem value="" disabled>
+                                Select role
+                            </MenuItem>
                             {roles.map((role) => (
-                                <option  key={role.id} value={role.id}>
+                                <MenuItem key={role.id} value={role.id}>
                                     {role.name}
-                                </option>
+                                </MenuItem>
                             ))}
-                        </NativeSelect></>)}
-                    <Button variant="contained" data-testid="submitButton">Submit</Button>
-                </form>
-            </div>
-        </>
-    )
+                        </Select>
+                    </FormControl>
+                )}
 
+                <Button type="submit" variant="contained" color="primary">
+                    Submit
+                </Button>
+            </Stack>
+        </Box>
+    );
 }
 
 export default EditUser;

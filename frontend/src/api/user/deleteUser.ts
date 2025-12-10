@@ -4,7 +4,7 @@ import { getCookie } from "../apiHelpers.ts";
 export async function deleteUser(id: number, userType: string) {
   try {
     //call the api here
-    const url = `${API_URL}/api/${userType}/${id}`;
+    const url = `${API_URL}/api/users/${id}`;
     const bearerToken = getCookie("bearerToken") as string;
 
     const result = await fetch(url, {

@@ -36,7 +36,7 @@ const typeDefs = gql`
       offset: Int!
       orderBy: String
     ): [User]
-    getusers(id: ID!): User
+    getuser(id: ID!): User
 
     role(id: ID!): Role
     roles: [Role]

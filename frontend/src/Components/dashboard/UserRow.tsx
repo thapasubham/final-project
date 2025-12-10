@@ -95,7 +95,7 @@ function User({ userData, userType }: { userData: UserFetch , userType:string}) 
 
     return (
         <tr>
-            <td><Link to={`/profile/${userData.id}/${userType}`}>{userData.firstname}</Link></td>
+            <td><Link to={`/profile/${userData.id}/`}>{userData.firstname}</Link></td>
             <td>{userData.lastname}</td>
             <td>{userData.email}</td>
             <td>{userData.phoneNumber}</td>
