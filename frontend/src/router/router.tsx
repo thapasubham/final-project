@@ -4,7 +4,6 @@ import { SignUp, Login, Logout, EditUser } from "../Components/user/index"
 import PageNotFound from "../Components/PageNotFound.tsx";
 import DashBoard from "../Components/dashboard/DashBoard.tsx";
 import { Profile } from "../Components/user/Profile.tsx";
-import CreateUser from "../Components/user/CreateUser.tsx";
 import { DeleteUser } from "../Components/user";
 import NavBar from "../Components/navbar/Navbar.tsx";
 import PaymentAdd from "../Components/checkout/checkoutForm.tsx";
@@ -22,7 +21,6 @@ export function Router() {
                 <Route path='/logout' Component={Logout} />
                 <Route path='/signup' Component={SignUp} />
                 <Route path='*' Component={PageNotFound} />
-                <Route path='/create' Component={CreateUser} />
                 <Route path='/editUser/:id' Component={EditUser} />
                 <Route path='/delete/:id' Component={DeleteUser} />
                 <Route path='/profile/:id' Component={Profile} />

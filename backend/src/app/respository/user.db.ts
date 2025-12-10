@@ -54,12 +54,13 @@ export class UserDb {
     offset: number,
     sort_by: string,
     order: "ASC" | "DESC",
-    isVerified: Boolean
+    role: string
   ) {
-    let qb = UserDb.userRepository
-      .createQueryBuilder("user")
-      .leftJoinAndSelect("user.role", "role")
-      .where(`user.isverified =  ${isVerified}`);
+    console.log(role)
+let qb = UserDb.userRepository
+  .createQueryBuilder("user")
+  .leftJoinAndSelect("user.role", "role")
+  .where("role.name = :role", { role });
 
     if (search && searchby) {
       qb = qb.andWhere(`user.${searchby} ILIKE :name`, {
@@ -67,7 +68,7 @@ export class UserDb {
       });
     }
 
-    let result = await qb
+    let [users, totalCount]= await qb
       .andWhere("user.isDeleted = :deleted", { deleted: false })
       .select([
         "user.id",
@@ -75,14 +76,16 @@ export class UserDb {
         "user.lastname",
         "user.phoneNumber",
         "user.email",
-        "user.isverified",
       ])
       .limit(limit)
       .offset(offset)
       .orderBy(sort_by || "user.id", order || "ASC")
-      .getMany();
+      .getManyAndCount();
 
-    return result;
+    return {
+        userList: users||[],
+        totalCount: totalCount||0,
+    };;
   }
 
   static async UpdateUser(user: User) {

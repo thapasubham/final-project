@@ -181,7 +181,8 @@ export function EditUser() {
 
                 {userStatus === UserType.ADMIN && (
                     <FormControl fullWidth>
-                        <InputLabel id="role-label">Role</InputLabel>
+                       <InputLabel id="role-label">Role</InputLabel>
+
                         <Select
                             labelId="role-label"
                             id="role"
@@ -189,13 +190,15 @@ export function EditUser() {
                             value={form.role}
                             onChange={handleChange}
                             required
+                            label="Role"   // <-- THIS FIXES THE OVERLAP
                         >
                             <MenuItem value="" disabled>
                                 Select role
                             </MenuItem>
+
                             {roles.map((role) => (
                                 <MenuItem key={role.id} value={role.id}>
-                                    {role.name}
+                                    {capitalizeFirst(role.name)}
                                 </MenuItem>
                             ))}
                         </Select>
@@ -208,6 +211,11 @@ export function EditUser() {
             </Stack>
         </Box>
     );
+}
+
+function capitalizeFirst(str: string) {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
 export default EditUser;

@@ -7,22 +7,24 @@ async function getUser(
   offset: number,
   orderby: string,
   filter: string,
-  user: string,
-  isVerified: boolean
+  role: string,
 ) {
   //make api call here
   const url = `${API_URL}/api/graphql`;
   const filterColumn = filter || "firstname";
 
   const query = `
-  query user($search: String, $searchBy: String, $filter: String, $limit: Int!, $offset: Int!, $orderBy: String, $verified: Boolean) {
-    ${user}(search: $search, searchBy: $searchBy, filter: $filter, limit: $limit, offset: $offset, orderBy: $orderBy, isVerified: $verified) {
-      id
+query users($search: String, $searchBy: String, $filter: String, $limit: Int!, $offset: Int!, $orderBy: String, $role: String!) 
+{
+    users(search: $search, searchBy: $searchBy, filter: $filter, limit: $limit, offset: $offset, orderBy: $orderBy, role: $role) {
+     userList
+     { id
       firstname
       lastname
       email
       phoneNumber
-      isverified
+    }
+    totalCount
     }
   }
 `;
@@ -34,7 +36,7 @@ async function getUser(
     limit,
     offset,
     orderBy: orderby,
-    verified: isVerified,
+    role
   };
   const result = await fetch(url, {
     method: "POST",
@@ -46,7 +48,7 @@ async function getUser(
 
   const { data } = await result.json();
 
-  return { status: result.status, data: data?.[user] };
+  return { status: result.status, data: data.users };
 }
 
 export default getUser;

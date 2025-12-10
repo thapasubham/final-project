@@ -76,19 +76,18 @@ export class UserService {
     limit: number,
     offset: number,
     orderBy: string,
-    isVerified?: boolean
-  ) {
-      const users: User[] = await UserDb.ReadUsers(
+    role: string  ) {
+      const result = await UserDb.ReadUsers(
         search,
         searchby,
         limit as number,
         offset as number,
         filter,
         orderBy as "ASC" | "DESC",
-        isVerified
+        role
       );
 
-      return users;
+      return result;
 
   }
 

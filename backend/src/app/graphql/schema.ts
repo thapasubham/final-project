@@ -11,7 +11,10 @@ const typeDefs = gql`
   }
 
   scalar Date
-
+  type userFetch{
+  userList: [User],
+  totalCount: Int
+  }
   type AuthToken {
     bearerToken: String
     refreshToken: String
@@ -35,7 +38,8 @@ const typeDefs = gql`
       limit: Int!
       offset: Int!
       orderBy: String
-    ): [User]
+      role: String!
+    ): userFetch
     getuser(id: ID!): User
 
     role(id: ID!): Role

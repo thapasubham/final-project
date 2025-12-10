@@ -2,7 +2,7 @@ export const userResolvers = {
   Query: {
     async users(
       _: any,
-      { search, searchBy, limit, offset, filter, orderBy, isVerified }: any,
+      { search, searchBy, limit, offset, filter, orderBy, role }: any,
       { dataSource }: any
     ) {
       const result = await dataSource.userService.ReadUsers(
@@ -12,7 +12,7 @@ export const userResolvers = {
         limit,
         offset,
         orderBy,
-        isVerified
+        role
       );
 
       return result;

@@ -30,20 +30,43 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
     const fontUrl = `${API_URL}/static/${img.fileName}`;
     const [isLoading, setIsLoading] = useState(true);
 
-    const theme = createTheme({
-        components: {
-            MuiCssBaseline: {
-                styleOverrides: `
-                            @font-face {
-                                 font-family: '${fontName}';
-                                src: url('${fontUrl}') format('truetype');
-                                font-display: swap;
-                            }
-                        `
-            }
-        }
-    });
+    useEffect(() => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.href = fontUrl;
+        link.as = 'font';
+        link.type = 'font/woff2';
+        link.crossOrigin = 'anonymous';
+        document.head.appendChild(link);
+    }, [fontUrl]);
+    const [fontLoaded, setFontLoaded] = useState(false);
 
+    useEffect(() => {
+                setIsLoading(true);
+
+        if (!fontName || !fontUrl) return; // safety check
+        if (fontLoaded) return; // already loaded
+
+        const loadFont = async () => {
+            try {
+                // Create FontFace with swap
+                const fontFace = new FontFace(fontName, `url(${fontUrl}) format('woff2')`, { display: 'swap' });
+
+                // Load font
+                const loadedFace = await fontFace.load();
+
+                // Add to document fonts
+                document.fonts.add(loadedFace);
+                setFontLoaded(true); // mark as loaded
+            } catch (err) {
+                console.error('Failed to load font', fontName, err);
+                setFontLoaded(true); // still allow fallback rendering
+            }
+        };
+        setIsLoading(false);
+
+        loadFont();
+    }, [fontName]);
 
 
     useEffect(() => {
@@ -51,7 +74,6 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
     }, [previewText])
     useEffect(() => {
-        setIsLoading(true);
         setMissingGlyphs(false)
         const fontFace = new FontFace(fontName, `url(${fontUrl}) format('truetype')`);
         fontFace.load().then((loadedFace) => {
@@ -100,8 +122,6 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
             ctx.fillText(char, 0, 0);
             refCtx.fillText(char, 0, 0);
 
-
-
             let mismatch = false;
             if (isDevanagari) {
                 const width = ctx.measureText(char).width;
@@ -129,77 +149,77 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
     };
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Card
+        // <ThemeProvider theme={theme}>
+        // <CssBaseline />
+        <Card
 
-                sx={{
-                    width: viewMode === 'grid' ? 'calc(50% - 8px)' : '100%',
-                    boxShadow: 1,
-                    p: 2,
-                    borderRadius: 2,
-                    backgroundColor: 'background.paper',
+            sx={{
+                width: viewMode === 'grid' ? 'calc(50% - 8px)' : '100%',
+                boxShadow: 1,
+                p: 2,
+                borderRadius: 2,
+                backgroundColor: 'background.paper',
 
-                }}>
-                {isLoading ? (
-                    <>
-                        <FontSkeleton />
-                    </>
-                ) : (<>
-                    <Box sx={{ display: "flex", flexDirection: "row", borderBottom: '1px solid #eee', alignItems: "center", justifyContent: "left" }}>
-                        <Typography
-                            sx={{
-
-                                fontSize: 25,
-                                px: 1,
-                                color: "text.primary",
-                                fontWeight: 500,
-                            }}
-                        >
-                            {fontName}
-
-                        </Typography>
-
-                        <IconButton
-                            onClick={() => onClickRow(img)}
-                            size="small"
-                            sx={{ p: 0.5, mt: "2px" }} // Fine-tuning spacing if needed
-                        >
-                            <ContentCopyRounded fontSize="small" />
-                        </IconButton>
-                    </Box>
-                    <Box
+            }}>
+            {isLoading ? (
+                <>
+                    <FontSkeleton />
+                </>
+            ) : (<>
+                <Box sx={{ display: "flex", flexDirection: "row", borderBottom: '1px solid #eee', alignItems: "center", justifyContent: "left" }}>
+                    <Typography
                         sx={{
-                            backgroundColor: preview.backgroundColor,
 
-                            mt: 1,
-                            p: 1.5,
-                            minHeight: 50,
-                            display: 'flex',
-                            borderRadius: 2,
-
-                            alignItems: 'center',
+                            fontSize: 25,
+                            px: 1,
+                            color: "text.primary",
+                            fontWeight: 500,
                         }}
                     >
-                        <Typography
-                            sx={{
-                                fontSize: preview.size,
-                                color: preview.color,
-                                fontFamily: fontName,
-                                lineHeight: 1.4,
-                                wordBreak: 'break-word',
-                                width: '100%'
-                            }}
-                        >
-                            {renderText}
-                        </Typography>
-                    </Box>
-                    <Typography sx={{ mt: 1, fontWeight: 600 }}>
-                        {img.price}$
+                        {fontName}
+
                     </Typography>
-                </>)}
-            </Card>
-        </ThemeProvider >
+
+                    <IconButton
+                        onClick={() => onClickRow(img)}
+                        size="small"
+                        sx={{ p: 0.5, mt: "2px" }} // Fine-tuning spacing if needed
+                    >
+                        <ContentCopyRounded fontSize="small" />
+                    </IconButton>
+                </Box>
+                <Box
+                    sx={{
+                        backgroundColor: preview.backgroundColor,
+
+                        mt: 1,
+                        p: 1.5,
+                        minHeight: 50,
+                        display: 'flex',
+                        borderRadius: 2,
+
+                        alignItems: 'center',
+                    }}
+                >
+                    <Typography
+                        sx={{
+                            fontSize: preview.size,
+                            color: preview.color,
+                            fontFamily: fontName,
+                            lineHeight: 1.4,
+                            wordBreak: 'break-word',
+                            width: '100%'
+                        }}
+                    >
+                        {renderText}
+                    </Typography>
+                </Box>
+                <Typography sx={{ mt: 1, fontWeight: 600 }}>
+                    {img.price}$
+                </Typography>
+            </>)}
+        </Card>
+        // </ThemeProvider >
     );
 }
 

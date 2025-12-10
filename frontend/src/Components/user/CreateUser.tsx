@@ -100,7 +100,6 @@ function CreateUser() {
         if (hasErrors) return;
 
         try {
-            payload.isverified = true;
 
             const result = await signUp(payload, user);
             setError("");
