@@ -6,7 +6,7 @@ import {
     Typography,
     IconButton,
     InputAdornment,
-Alert,
+    Alert,
     Card,
     CardContent,
 } from "@mui/material";
@@ -14,17 +14,19 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 import loginUser from "../../api/user/login.ts";
 import { useNavigate } from "react-router-dom";
-import {  isAxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { LOGGED_IN_SUCCESS } from "../../constants/constant.ts";
 import { setTokens } from "../../api/refresh/setTokens.ts";
 import { useAuth } from "../../auth/AuthContext.tsx";
+import { useNotification } from "../../notification/notificationContext.tsx";
 
 function Login() {
     const [user, setUser] = useState({
         email: "",
         password: "",
     });
-const { setIsLogged, setUserID, setUserStatus, setUserPermission } = useAuth();
+    const { setIsLogged, setUserID, setUserStatus, setUserPermission } = useAuth();
+    const notify = useNotification();
 
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
@@ -44,13 +46,11 @@ const { setIsLogged, setUserID, setUserStatus, setUserPermission } = useAuth();
 
             if (data.status === 200) {
                 setTokens(data.message,);
-                alert(LOGGED_IN_SUCCESS);
                 setIsLogged(true);
-            setUserID(data.message.id);
-            setUserStatus(data.message.role);
-            setUserPermission(data.message.permissions);
-
-            navigate("/");
+                setUserID(data.message.id);
+                setUserStatus(data.message.role);
+                setUserPermission(data.message.permissions);
+                notify(LOGGED_IN_SUCCESS, "success")
                 setError("");
                 navigate("/");
             } else {
