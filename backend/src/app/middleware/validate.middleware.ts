@@ -73,54 +73,50 @@ export function validateLogin(req: Request, res: Response, next: NextFunction) {
 
   next();
 }
-
 function inputValidation(user: User) {
   const error: error = {
     firstname: "",
     lastname: "",
     email: "",
     phoneNumber: "",
+    password: "",
   };
+
   const nameRegex = /^[A-Z][a-z]*$/;
+
   if (!user.firstname.trim()) {
     error.firstname = "First name is required";
   } else if (!nameRegex.test(user.firstname.trim())) {
     error.firstname = "First name is not valid";
-  } else {
-    error.firstname = "";
   }
 
   if (!user.lastname.trim()) {
     error.lastname = "Last name is required";
   } else if (!nameRegex.test(user.lastname.trim())) {
     error.lastname = "Last name is not valid";
-  } else {
-    error.lastname = "";
-  }
-  if (!user.email.trim()) {
-    error.email = "Email is required";
-  } else if (!/^([a-z0-9_-]+@[a-z]+\.[a-z]{2,3})*$/.test(user.email.trim())) {
-    error.email = "Email is not valid";
-  } else {
-    error.email = "";
-  }
-  if (!user.phoneNumber.trim()) {
-    error.phoneNumber = "Phone number is required";
-  } else if (isNaN(Number(user.phoneNumber.trim()))) {
-    error.phoneNumber = "Phone number is invalid";
-  } else if (user.phoneNumber.length !== 10) {
-    error.phoneNumber = "Phone number should be 10 digits";
-  } else {
-    error.phoneNumber = "";
   }
 
-  if (user.password) {
-    if (user.password.length < 6 || user.password.length > 15) {
-      error.password = "Password should be at least 6 to 15 characters long";
-    } else {
-      error.password = "";
-    }
+  if (!user.email.trim()) {
+    error.email = "Email is required";
+  } else if (
+    !/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,10}$/.test(
+      user.email.trim()
+    )
+  ) {
+    error.email = "Email is not valid";
   }
+
+  if (!user.phoneNumber.trim()) {
+    error.phoneNumber = "Phone number is required";
+  } else if (!/^\d{10}$/.test(user.phoneNumber.trim())) {
+    error.phoneNumber = "Phone number must be 10 digits";
+  }
+if(user.password){
+  
+ if (user.password.length < 6 || user.password.length > 15) {
+    error.password = "Password must be 6 to 15 characters long";
+  }
+}
 
   return error;
 }

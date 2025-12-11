@@ -27,31 +27,46 @@ export class UserController {
   }
 
   async GetUsers(req: Request, res: Response) {
-    const response: responseType<User[]> = {
+    const response: responseType<any> = {
       status: 200,
     };
-    const limit = parseInt(req.query.limit as string);
-    const offset = parseInt(req.query.offset as string);
 
-    const { search, searchby, orderBy, filter } = req.query;
-    const user = (await userService.ReadUsers(
+    const {
+      search = "",
+      searchby = "",
+      sort_by = "user.id",
+      order = "ASC",
+      role = "",
+    } = req.query;
+
+    const limit = Number(req.query.limit) || 10;
+    const offset = Number(req.query.offset) || 0;
+    const result = await userService.ReadUsers(
       search as string,
       searchby as string,
-      filter as string,
+      sort_by as string,
       limit,
       offset,
-      orderBy as string
-    )) as User[];
+      (order as string).toUpperCase() as "ASC" | "DESC",
+      role as string
+    );
 
-    if (user.length === 0) {
+    if (!result || result.userList.length === 0) {
       response.message = constants.NO_MORE_USER;
       response.status = 404;
     } else {
-      response.data = user;
+      response.data = {
+        users: result.userList,
+        totalCount: result.totalCount,
+        limit,
+        offset,
+      };
       response.status = 200;
     }
+
     ResponseApi.WriteResponse(res, response);
   }
+
 
   async GetUser(req: Request, res: Response) {
     const response: responseType<User> = {

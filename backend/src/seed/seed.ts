@@ -54,7 +54,7 @@ export const seedAdminRole = async () => {
     const allPermissions = await permRepo.find();
 
     // Assign them all
-    adminRole.permission= allPermissions;
+    adminRole.permission = allPermissions;
 
     await roleRepo.save(adminRole);
 

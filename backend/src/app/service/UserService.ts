@@ -23,7 +23,6 @@ export class UserService {
    *
    */
   async CreateUser(user: User): Promise<User> {
-    user.id = Date.now();
     const createdUser: User = await UserDb.Createuser(user);
 
     return createdUser;
@@ -76,18 +75,19 @@ export class UserService {
     limit: number,
     offset: number,
     orderBy: string,
-    role: string  ) {
-      const result = await UserDb.ReadUsers(
-        search,
-        searchby,
-        limit as number,
-        offset as number,
-        filter,
-        orderBy as "ASC" | "DESC",
-        role
-      );
+    role: string) {
+    const result = await UserDb.ReadUsers(
+      search,
+      searchby,
+      limit as number,
+      offset as number,
+      filter,
+      orderBy as "ASC" | "DESC",
+      role
+    );
+    console.log(filter, searchby, search, orderBy)
 
-      return result;
+    return result;
 
   }
 

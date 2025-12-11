@@ -9,6 +9,6 @@ export function sanitizeInput(user: User) {
   user.email = user.email.trim();
   user.phoneNumber = user.phoneNumber.trim();
 
-
-  return user;
+  console.log(user)
+    return user;
 }

@@ -57,10 +57,10 @@ export class UserDb {
     role: string
   ) {
     console.log(role)
-let qb = UserDb.userRepository
-  .createQueryBuilder("user")
-  .leftJoinAndSelect("user.role", "role")
-  .where("role.name = :role", { role });
+    let qb = UserDb.userRepository
+      .createQueryBuilder("user")
+      .leftJoinAndSelect("user.role", "role")
+      .where("role.name = :role", { role });
 
     if (search && searchby) {
       qb = qb.andWhere(`user.${searchby} ILIKE :name`, {
@@ -68,7 +68,7 @@ let qb = UserDb.userRepository
       });
     }
 
-    let [users, totalCount]= await qb
+    let [users, totalCount] = await qb
       .andWhere("user.isDeleted = :deleted", { deleted: false })
       .select([
         "user.id",
@@ -79,12 +79,12 @@ let qb = UserDb.userRepository
       ])
       .limit(limit)
       .offset(offset)
-      .orderBy(sort_by || "user.id", order || "ASC")
+      .orderBy(`user.${sort_by}` || "user.id", order || "ASC")
       .getManyAndCount();
 
     return {
-        userList: users||[],
-        totalCount: totalCount||0,
+      userList: users || [],
+      totalCount: totalCount || 0,
     };;
   }
 

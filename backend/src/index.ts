@@ -12,6 +12,7 @@ import { errorHandler } from "./app/middleware/error.js";
 import cookieparser from "cookie-parser";
 import { seedAdminRole, seedAdminUser, seedPermission } from "./seed/seed.js";
 import { gql_dataSource } from "./app/graphql/datasource/index.js";
+import { seedUsers } from "./seed/seedUser.js";
 
 async function startServer() {
   const app = express();
@@ -77,7 +78,6 @@ AppDataSource.initialize()
     seedPermission()
 
     seedAdminRole();
-
     startServer();
     seedAdminUser()
   })
