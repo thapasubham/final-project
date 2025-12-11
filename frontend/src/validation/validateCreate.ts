@@ -43,15 +43,20 @@ export function validateCreate(user: userPayload) {
   } else {
     error.phoneNumber = "";
   }
-  if (user.password && user.confirmPassword) {
-    if (user.password !== user.confirmPassword) {
-      error.password = "Password doesn't match";
-    } else if (user.password.length < 6 || user.password.length > 15) {
-      error.password = "Password should be at least 6 to 15 characters long";
-    } else {
-      error.password = "";
-    }
+  if(user.password){
+if ( user.password.length < 6 || user.password.length > 15) {
+  error.password = "Password must be 6 to 15 characters long";
+} else {
+  error.password = "";
+}
+
+if (user.confirmPassword && user.password !== user.confirmPassword) {
+  error.confirmPassword = "Passwords do not match";
+} else {
+  error.confirmPassword = "";
+}
   }
+
   return error;
 }
 

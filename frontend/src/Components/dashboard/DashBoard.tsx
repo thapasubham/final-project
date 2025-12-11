@@ -7,6 +7,7 @@ function DashBoard() {
   const { permission } = useAuth();
   const showAdminOptions = permission.includes("admin:delete");
 
+
   // Tabs state
   const [tabIndex, setTabIndex] = useState(0);
 

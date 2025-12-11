@@ -7,7 +7,22 @@ type Props = {
   setFilter: (filter: string) => void;
   setOrderBy: (orderBy: string) => void;
 };
-
+const tableColumn = [{
+  column: "firstname",
+  label: "Firstname"
+},
+{
+  column: "lastname",
+  label: "Lastname"
+},
+{
+  column: "email",
+  label: "Email"
+},
+{
+  column: "phoneNumber",
+  label: "Phone"
+}]
 function TableHeader({ setFilter, setOrderBy }: Props) {
   const [order, setOrder] = useState<"asc" | "desc">("asc");
   const { userStatus } = useAuth();
@@ -24,45 +39,17 @@ function TableHeader({ setFilter, setOrderBy }: Props) {
   return (
     <TableHead>
       <TableRow>
-        <TableCell sortDirection={order}>
-          <TableSortLabel
-            active
-            direction={order}
-            onClick={() => handleClick("firstname")}
-          >
-            Firstname
-          </TableSortLabel>
-        </TableCell>
 
-        <TableCell sortDirection={order}>
-          <TableSortLabel
+        {tableColumn.map((column) => (
+          <TableCell sortDirection={order}><TableSortLabel
             active
             direction={order}
-            onClick={() => handleClick("lastname")}
+            onClick={() => handleClick(column.column)}
           >
-            Lastname
+            {column.label}
           </TableSortLabel>
-        </TableCell>
+          </TableCell>))}
 
-        <TableCell sortDirection={order}>
-          <TableSortLabel
-            active
-            direction={order}
-            onClick={() => handleClick("email")}
-          >
-            Email
-          </TableSortLabel>
-        </TableCell>
-
-        <TableCell sortDirection={order}>
-          <TableSortLabel
-            active
-            direction={order}
-            onClick={() => handleClick("phoneNumber")}
-          >
-            Phone
-          </TableSortLabel>
-        </TableCell>
 
         {/* {isPrivileged && <TableCell>Action</TableCell>} */}
       </TableRow>

@@ -9,4 +9,4 @@ export enum PermissionType {
   FONT_UPLOAD = "font:upload",
 }
 
-export const DEFAULT_ROLE = "default";
+export const DEFAULT_ROLE = "user";

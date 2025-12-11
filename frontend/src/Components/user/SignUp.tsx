@@ -14,6 +14,7 @@ import signUp from "../../api/user/signUp.ts";
 import { useNavigate } from "react-router-dom";
 import { validateCreate, sanitizeInput } from "../../validation/validateCreate.ts";
 import { userErrorType } from "../../validation/userFormError.types.ts";
+import { useNotification } from "../../notification/notificationContext.tsx";
 
 export function SignUp() {
     const [form, setForm] = useState({
@@ -28,12 +29,13 @@ export function SignUp() {
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-
+    const notify = useNotification()
     const [formError, setFormError] = useState<userErrorType>({
         firstname: "",
         lastname: "",
         email: "",
         phoneNumber: "",
+        password: ""
     });
 
     async function register(e: React.FormEvent<HTMLFormElement>) {
@@ -51,10 +53,10 @@ export function SignUp() {
         if (hasErrors) return;
 
         try {
-            const result = await signUp(payload, "users");
+            const result = await signUp(payload);
 
             if (result.status === 201) {
-                alert(result.message);
+                notify(result.message, "success");
                 navigate("/login");
             } else if (result.status === 409 || result.status === 400) {
                 setFormError({ ...formError, ...result.message });
@@ -145,6 +147,8 @@ export function SignUp() {
                     type={showPassword ? "text" : "password"}
                     value={form.password}
                     onChange={handleChange}
+                    error={!!formError.password}
+
                     sx={{ mb: 2 }}
                     InputProps={{
                         endAdornment: (
@@ -170,6 +174,8 @@ export function SignUp() {
                     name="confirmPassword"
                     type={showPassword ? "text" : "password"}
                     value={form.confirmPassword}
+                    error={!!formError.password}
+                    helperText={formError.password}
                     onChange={handleChange}
                     sx={{ mb: 2 }}
                 />
