@@ -41,7 +41,6 @@ export function Profile() {
     const [loading, setLoading] = useState(false);
     const [allowEdit, setAllowEdit] = useState(false);
     const [error, setError] = useState("");
-    const [retry, setRetry] = useState(false);
     const notify = useNotification()
 
     const fetchUser = async () => {
@@ -50,7 +49,6 @@ export function Profile() {
         try {
             let response = await getUserByid(Number(id));
 
-            // If 401, try refreshing token
             if (response.status === 401) {
                 const refreshed = await Refresh(userStatus); // should update token in storage/axios headers
                 if (refreshed) {
@@ -81,7 +79,7 @@ export function Profile() {
 
     useEffect(() => {
         fetchUser();
-    }, [retry, id]);
+    }, [id]);
 
     // Helper to get initials
     const getInitials = (first: string, last: string) => {
@@ -202,6 +200,7 @@ export function Profile() {
                                             borderRadius: 2,
                                             py: 1.5,
                                             textTransform: "none",
+                                            background: "linear-gradient(90deg, rgba(0,0,250,0.3) 0%, rgba(0,0,255,0.5) 100%)",
                                             fontWeight: 600,
                                             fontSize: "1rem"
                                         }}

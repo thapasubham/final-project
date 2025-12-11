@@ -10,7 +10,9 @@ export const seedPermission = async () => {
     const permissions = Object.values(PermissionType);
 
     for (const perm of permissions) {
-      const existing = await permissionRepository.findOne({ where: { name: perm } });
+      const existing = await permissionRepository.findOne({
+        where: { name: perm },
+      });
       if (!existing) {
         const newPermission = permissionRepository.create({ name: perm });
         await permissionRepository.save(newPermission);
@@ -25,7 +27,6 @@ export const seedPermission = async () => {
     console.error("Error seeding permissions:", error);
   }
 };
-
 
 export const seedAdminRole = async () => {
   try {
@@ -63,7 +64,6 @@ export const seedAdminRole = async () => {
     console.error("Error seeding admin role:", err);
   }
 };
-
 
 export const seedAdminUser = async () => {
   try {
@@ -111,5 +111,46 @@ export const seedAdminUser = async () => {
     }
   } catch (err) {
     console.error("❌ Error seeding admin user:", err);
+  }
+};
+
+export const seedUserRole = async () => {
+  try {
+    console.log("Seeding user role");
+
+    const roleRepo = AppDataSource.getRepository(Role);
+    const permRepo = AppDataSource.getRepository(Permission);
+
+    // Find user role with permissions
+    let userRole = await roleRepo.findOne({
+      where: { name: "user" },
+      relations: ["permission"],
+    });
+
+    // Create role if missing
+    if (!userRole) {
+      userRole = await roleRepo.save(
+        roleRepo.create({
+          name: "user",
+          permission: [],
+        })
+      );
+    }
+
+    const allowedPermissions = await permRepo.find({
+      where: [
+        { name: PermissionType.EDIT },
+        { name: PermissionType.VIEW },
+        { name: PermissionType.DELETE },
+      ],
+    });
+
+    userRole.permission = allowedPermissions;
+
+    await roleRepo.save(userRole);
+
+    console.log("User role seeded with edit, view, delete!");
+  } catch (err) {
+    console.error("Error seeding user role:", err);
   }
 };

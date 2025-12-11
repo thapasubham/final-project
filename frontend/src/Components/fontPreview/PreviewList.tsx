@@ -57,7 +57,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
                 (langs) => langs.language.toLowerCase() === language?.toLowerCase()
             )
             setSampleText(matched?.text || defaultText);
-        }, 50);
+        }, 10);
 
 
     }, [previewText, language]);

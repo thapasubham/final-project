@@ -9,7 +9,7 @@ export type AuthContextTypes = {
     setUserStatus: (userStatus: string) => void;
     setUserPermission: (permission: string[]) => void;
     setUserID: (id: number) => void;
-    refreshAuthFromStorage: () => void; // 🔥 NEW
+    refreshAuthFromStorage: () => void;
 };
 
 const AuthContext = React.createContext<AuthContextTypes | null>(null);
@@ -26,7 +26,6 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         return stored ? Number(stored) : -1;
     });
 
-    // 🔥 When tokens are updated in localStorage, call this to refresh React state
     const refreshAuthFromStorage = () => {
         setIsLogged(localStorage.getItem("isLogged") === "true");
         setUserStatus(localStorage.getItem("userRole") || "");

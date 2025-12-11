@@ -24,6 +24,7 @@ import { UserType } from "../../types/userType.ts";
 import { Role } from "../../types/Role.ts";
 import { userErrorType } from "../../validation/userFormError.types.ts";
 import { useNotification } from "../../notification/notificationContext.tsx";
+import { Edit } from "@mui/icons-material";
 
 export function EditUser() {
     const { id } = useParams();
@@ -107,7 +108,13 @@ export function EditUser() {
 
                 if (result.status === 200) {
                     notify(result.message, "success");
-                    navigate("/dashboard");
+                    setTimeout(() => {
+                        if (window.history.length > 1) {
+                            navigate(-1);
+                        } else {
+                            navigate("/dashboard");
+                        }
+                    }, 500);
                     return;
                 }
 
@@ -231,12 +238,24 @@ export function EditUser() {
                         </FormControl>
                     )}
 
-                    <Button type="submit" variant="contained" color="primary">
+                    <Button
+                        type="submit"
+                        endIcon={<Edit />}
+                        fullWidth
+                        sx={{
+                            borderRadius: 2,
+                            py: 1.5,
+                            textTransform: "none",
+                            background: "linear-gradient(90deg, rgba(0,0,250,0.3) 0%, rgba(0,0,255,0.5) 100%)",
+                            fontWeight: 600,
+                            fontSize: "1rem"
+                        }}
+                    >
                         Submit
                     </Button>
                 </Stack>
             </Box>
-        </Container>
+        </Container >
     );
 }
 

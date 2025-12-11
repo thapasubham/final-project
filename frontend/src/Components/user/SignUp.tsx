@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Box,
     Button,
@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { validateCreate, sanitizeInput } from "../../validation/validateCreate.ts";
 import { userErrorType } from "../../validation/userFormError.types.ts";
 import { useNotification } from "../../notification/notificationContext.tsx";
+import { useAuth } from "../../auth/AuthContext.tsx";
 
 export function SignUp() {
     const [form, setForm] = useState({
@@ -25,7 +26,7 @@ export function SignUp() {
         password: "",
         confirmPassword: "",
     });
-
+    const { isLogged } = useAuth()
     const navigate = useNavigate();
     const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -37,7 +38,16 @@ export function SignUp() {
         phoneNumber: "",
         password: ""
     });
+    useEffect(() => {
+        if (isLogged) {
+            notify("ALready Logged in", "warning")
+            setTimeout(() => {
 
+                navigate("/");
+
+            }, 500);
+        }
+    }, [])
     async function register(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
 
@@ -187,6 +197,14 @@ export function SignUp() {
                     variant="contained"
                     color="primary"
                     data-testid="submitButton"
+                    sx={{
+                        borderRadius: 2,
+                        py: 1.5,
+                        textTransform: "none",
+                        background: "linear-gradient(90deg, rgba(0,0,250,0.3) 0%, rgba(0,0,255,0.5) 100%)",
+                        fontWeight: 600,
+                        fontSize: "1rem"
+                    }}
                 >
                     Submit
                 </Button>

@@ -37,6 +37,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
         link.type = 'font/woff2';
         link.crossOrigin = 'anonymous';
         document.head.appendChild(link);
+
     }, [fontUrl]);
     const [fontLoaded, setFontLoaded] = useState(false);
 
@@ -70,7 +71,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
     useEffect(
         () => {
-
+            setMissingGlyphs(false)
             checkMissing()
 
         }, [previewText])
@@ -80,12 +81,12 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
         fontFace.load().then((loadedFace) => {
             document.fonts.add(loadedFace);
             checkMissing()
-            setIsLoading(false);
         });
 
     }, [fontName]);
 
     const checkMissing = () => {
+
         const supportedText = isSupported(previewText);
         const hasTofu = supportedText.includes('\u29E0');
         if (hasTofu) setMissingGlyphs(hasTofu);

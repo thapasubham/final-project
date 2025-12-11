@@ -3,7 +3,6 @@ import { User } from "../../entity/user";
 import { UserDb } from "../respository/user.db";
 import { Login } from "../../types/login.types";
 
-
 /**
  * Class to perfrom CRUD operation
  * @example
@@ -75,7 +74,8 @@ export class UserService {
     limit: number,
     offset: number,
     orderBy: string,
-    role: string) {
+    role: string
+  ) {
     const result = await UserDb.ReadUsers(
       search,
       searchby,
@@ -85,10 +85,9 @@ export class UserService {
       orderBy as "ASC" | "DESC",
       role
     );
-    console.log(filter, searchby, search, orderBy)
+    console.log(filter, searchby, search, orderBy);
 
     return result;
-
   }
 
   async Update(user: User): Promise<User> {
@@ -104,8 +103,14 @@ export class UserService {
   async Refresh(id: number) {
     const user = await UserDb.ReadUser(id);
     const signed_token = Auth.Sign(user.id, user.role.id);
+
     const permissionName = user.role.permission.map((p) => p.name);
-    return { signed_token, permissions: permissionName, id: user.id };
+    return {
+      signed_token,
+      permissions: permissionName,
+      id: user.id,
+      role: user.role.name,
+    };
   }
 
   async DeleteUnverified(id: number) {

@@ -9,6 +9,8 @@ import NavBar from "../Components/navbar/Navbar.tsx";
 import PaymentAdd from "../Components/checkout/checkoutForm.tsx";
 import App from "../App.tsx";
 import { Suspense } from "react";
+import RoleProtectedRoute from "../Components/protectedRoute.tsx";
+import Unauthorized from "../Components/unauthorizes.tsx";
 export function Router() {
     return (
         <BrowserRouter>
@@ -17,17 +19,22 @@ export function Router() {
 
                 <Routes>
 
-                    <Route path="/" Component={App} />
-                    <Route path="/payment" Component={PaymentAdd} />
-                    <Route path='/about' Component={About} />
-                    <Route path='/login' Component={Login} />
-                    <Route path='/dashboard' Component={DashBoard} />
-                    <Route path='/logout' Component={Logout} />
-                    <Route path='/signup' Component={SignUp} />
-                    <Route path='*' Component={PageNotFound} />
-                    <Route path='/editUser/:id' Component={EditUser} />
-                    <Route path='/delete/:id' Component={DeleteUser} />
-                    <Route path='/profile/:id' Component={Profile} />
+                    <Route path="/" element={<App />} />
+                    <Route path="/payment" element={<PaymentAdd />} />
+                    <Route path='/about' element={<About />} />
+                    <Route path='/login' element={<Login />} />
+                    <Route path='/dashboard'
+                        element={<RoleProtectedRoute allowedRoles={["admin"]}>
+                            <DashBoard />
+                        </RoleProtectedRoute>} />
+                    <Route path='/logout' element={<Logout />} />
+                    <Route path='/signup' element={<SignUp />} />
+                    <Route path='*' element={<PageNotFound />} />
+                    <Route path='/editUser/:id' element={<EditUser />} />
+                    <Route path='/delete/:id' element={<DeleteUser />} />
+                    <Route path='/profile/:id' element={<Profile />} />
+                    <Route path='/unauthorized' element={<Unauthorized />} />
+
                 </Routes>
             </Suspense>
 

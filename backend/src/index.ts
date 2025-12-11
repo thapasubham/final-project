@@ -10,7 +10,12 @@ import typeDefs from "./app/graphql/schema.js";
 import { resolvers } from "./app/graphql/resolvers/index.js";
 import { errorHandler } from "./app/middleware/error.js";
 import cookieparser from "cookie-parser";
-import { seedAdminRole, seedAdminUser, seedPermission } from "./seed/seed.js";
+import {
+  seedAdminRole,
+  seedAdminUser,
+  seedPermission,
+  seedUserRole,
+} from "./seed/seed.js";
 import { gql_dataSource } from "./app/graphql/datasource/index.js";
 import { seedUsers } from "./seed/seedUser.js";
 
@@ -24,7 +29,7 @@ async function startServer() {
   app.use(
     cors({
       origin: frontendUrl, // must match frontend exactly
-      credentials: true,   // allow cookies/auth headers
+      credentials: true, // allow cookies/auth headers
     })
   );
   app.use("/api/font", routes.fontRoute);
@@ -38,9 +43,6 @@ async function startServer() {
   app.use(cookieparser());
 
   const server = new ApolloServer({ typeDefs, resolvers });
-
-
-
 
   //graphql
   await server.start();
@@ -60,7 +62,6 @@ async function startServer() {
   const __dirname = dirname(filename);
   app.use("/static", express.static(path.join(__dirname, "../static")));
 
-
   app.use((req, res) => {
     res.status(404).json({ error: "Route not found" });
   });
@@ -69,23 +70,17 @@ async function startServer() {
     console.log("listening at port 3000");
     console.log("Serving static from:", path.join(__dirname, "../static"));
   });
-};
-
+}
 
 AppDataSource.initialize()
   .then(async () => {
     console.log("Data Source has been initialized!");
-    seedPermission()
-
+    seedUserRole();
+    seedPermission();
     seedAdminRole();
     startServer();
-    seedAdminUser()
+    seedAdminUser();
   })
   .catch((err) => {
     console.error("Error during Data Source initialization:", err);
   });
-
-
-
-
-
