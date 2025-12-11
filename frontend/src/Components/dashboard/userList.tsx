@@ -34,6 +34,7 @@ function UserList({ role }: { role: string }) {
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const tempOffset = useRef(0);
 
   const {
     page, setPage,
@@ -97,13 +98,30 @@ function UserList({ role }: { role: string }) {
     setPage(0);
   };
 
+  const handleText = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+    const value = e.target.value;
+
+
+    if (value !== "") {
+      if (tempOffset.current === 0) {
+        tempOffset.current = page;
+      }
+      setPage(0);
+    } else {
+      setPage(tempOffset.current);
+      tempOffset.current = 0;
+    }
+
+    setSearch(value);
+  };
   return (
     <Box>
       <Box display="flex" gap={2} mb={2} alignItems="center">
         <TextField
           label={`Search by ${searchBy}`}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleText}
           variant="outlined"
           size="small"
         />

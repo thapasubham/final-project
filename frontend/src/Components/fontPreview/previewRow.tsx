@@ -1,4 +1,4 @@
-import { Box, Card, createTheme, CssBaseline, IconButton, ThemeProvider, Typography } from "@mui/material";
+import { Box, Card, IconButton, Typography } from "@mui/material";
 import type { preview } from "../../types/previewTypes.ts";
 import { API_URL } from "../../utils/config.ts";
 import { useEffect, useState } from "react";
@@ -152,8 +152,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
     };
 
     return (
-        // <ThemeProvider theme={theme}>
-        // <CssBaseline />
+
         <Card
 
             sx={{
@@ -222,7 +221,6 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                 </Typography>
             </>)}
         </Card>
-        // </ThemeProvider >
     );
 }
 
