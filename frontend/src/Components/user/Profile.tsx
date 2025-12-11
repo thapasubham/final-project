@@ -63,7 +63,7 @@ export function Profile() {
 
             if (response.status === 200) {
                 const data = response.data;
-                notify("", "success");
+                notify("User loaded successfully", "success");
                 setUser(data);
                 setRole(data.role);
                 setAllowEdit(userStatus === UserType.ADMIN || Number(userID) === data.id);
