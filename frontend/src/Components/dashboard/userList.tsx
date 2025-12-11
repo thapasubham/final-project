@@ -94,8 +94,13 @@ function UserList({ role }: { role: string }) {
   };
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    const newRows = parseInt(event.target.value, 10);
+
+    const currentOffset = page * rowsPerPage;
+    const newPage = Math.floor(currentOffset / newRows);
+
+    setRowsPerPage(newRows);
+    setPage(newPage);
   };
 
   const handleText = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -220,12 +225,12 @@ function useUserListParams(role: string, initialState: any) {
   const [searchParams, setSearchParams] = useSearchParams();
   const tabStates = useRef<Record<string, any>>({});
 
-  const [page, setPage] = useState(initialState.page);
-  const [rowsPerPage, setRowsPerPage] = useState(initialState.rowsPerPage);
-  const [search, setSearch] = useState(initialState.search);
-  const [searchBy, setSearchBy] = useState(initialState.searchBy);
-  const [filter, setFilter] = useState(initialState.filter);
-  const [orderBy, setOrderBy] = useState(initialState.orderBy);
+  const [page, setPage] = useState(searchParams.get("page") || initialState.page);
+  const [rowsPerPage, setRowsPerPage] = useState(searchParams.get("rowsPerPage") || initialState.rowsPerPage);
+  const [search, setSearch] = useState(searchParams.get("search") || initialState.search);
+  const [searchBy, setSearchBy] = useState(searchParams.get("searchBy") || initialState.searchBy);
+  const [filter, setFilter] = useState(searchParams.get("filter") || initialState.filter);
+  const [orderBy, setOrderBy] = useState(searchParams.get("orderBy") || initialState.orderBy);
 
   // Load previous tab state if exists
   useEffect(() => {
