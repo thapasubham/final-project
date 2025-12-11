@@ -26,7 +26,6 @@ interface PreviewRowProps {
 function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onClickRow, }: PreviewRowProps) {
     const fontName = img.name;
     const [renderText, setRender] = useState("");
-    const [sampletext, setSampleText] = useState("")
     const fontUrl = `${API_URL}/static/${img.fileName}`;
     const [isLoading, setIsLoading] = useState(true);
 
@@ -42,7 +41,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
     const [fontLoaded, setFontLoaded] = useState(false);
 
     useEffect(() => {
-                setIsLoading(true);
+        setIsLoading(true);
 
         if (!fontName || !fontUrl) return; // safety check
         if (fontLoaded) return; // already loaded
@@ -69,25 +68,29 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
     }, [fontName]);
 
 
-    useEffect(() => {
-        setTimeout(() => { setSampleText(previewText) }, 0)
+    useEffect(
+        () => {
 
-    }, [previewText])
+            checkMissing()
+
+        }, [previewText])
     useEffect(() => {
         setMissingGlyphs(false)
-        const fontFace = new FontFace(fontName, `url(${fontUrl}) format('truetype')`);
+        const fontFace = new FontFace(fontName, `url(${fontUrl}) format('woff2')`);
         fontFace.load().then((loadedFace) => {
             document.fonts.add(loadedFace);
-            const supportedText = isSupported(sampletext);
-            const hasTofu = supportedText.includes('\u29E0');
-            if (hasTofu) setMissingGlyphs(hasTofu);
-            setRender(supportedText);
+            checkMissing()
             setIsLoading(false);
         });
 
-    }, [sampletext, fontName]);
+    }, [fontName]);
 
-
+    const checkMissing = () => {
+        const supportedText = isSupported(previewText);
+        const hasTofu = supportedText.includes('\u29E0');
+        if (hasTofu) setMissingGlyphs(hasTofu);
+        setRender(supportedText);
+    }
     const isSupported = (text: string,) => {
         const canvasSize = 150;
         const canvas = document.createElement("canvas");

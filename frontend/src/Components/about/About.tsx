@@ -6,10 +6,10 @@ function About() {
     return (
         <Container maxWidth="md">
             <Box sx={{ my: 6 }}>
-                <Typography variant="h3" component="h1" gutterBottom>
+                <Typography color= "gray" variant="h3" component="h1" gutterBottom>
                     About Us
                 </Typography>
-
+            <Box color="text.primary">
                 <Typography variant="body1">
                     Welcome to <strong>FontHub</strong> — a curated marketplace of premium
                     typefaces crafted for designers, developers, and brands. Our mission is to
@@ -30,6 +30,7 @@ function About() {
                 <Typography variant="caption" color="text.secondary">
                     © {year} FontHub. All rights reserved.
                 </Typography>
+                </Box>
             </Box>
         </Container>
     );

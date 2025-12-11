@@ -1,12 +1,12 @@
-import { Box, Button, Card, Container, Divider, InputAdornment, Paper, Slider, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, InputAdornment, Paper, Slider, TextField, Typography } from "@mui/material";
 import PreviewList from "../fontPreview/PreviewList.tsx";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import type { preview } from "../../types/previewTypes.ts";
 import ColorPicker from "../colorPicker/colorPicker.tsx";
 import { useSearchParams } from "react-router-dom";
 import LanguageList from "../langugeList/langugeList.tsx";
-import { ArrowDropDown, PinDropSharp, Restore } from "@mui/icons-material";
+import { ArrowDropDown, Restore } from "@mui/icons-material";
 
 const initialPreview: preview = {
 
@@ -65,14 +65,14 @@ function Page() {
             height: "100vh",
         }}>
             {/* Controls Panel - Fixed width */}
-           <Paper sx={{
-            p: 1,
-            width: "15%",
-            height: "100%",
-            m: 0,
-            borderRadius: 0,
-            boxShadow: 3,
-            flexShrink: 0 // Prevent shrinking when content grows
+            <Paper sx={{
+                p: 1,
+                width: "15%",
+                height: "100%",
+                m: 0,
+                borderRadius: 0,
+                boxShadow: 3,
+                flexShrink: 0 // Prevent shrinking when content grows
             }}>
 
                 <Box sx={{
@@ -215,7 +215,7 @@ function Page() {
             {/* Preview Area - Takes remaining space */}
             <Box sx={{
                 width: "100%",
-overflow: "auto"
+                overflow: "auto"
             }}>
 
                 <PreviewList previewText={previewText} preview={preview} reset={reset} setReset={setReset} />
