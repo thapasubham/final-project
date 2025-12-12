@@ -16,7 +16,9 @@ export default function NavBar() {
         "&:hover": {
             transform: "scale(1.01)",
             border: "1px solid rgba(255,255,255,0.5)",
-            background: "rgba(50,150,255,0.1)"
+            background: "rgba(50,150,255,0.1)",
+            backdropFilter: "blur(4px) ",
+
         },
     };
 
@@ -29,9 +31,8 @@ export default function NavBar() {
                 width: "100%",
                 borderBottomRightRadius: 8,
                 borderBottomLeftRadius: 8,
-
-                background: "linear-gradient(90deg, rgba(150,255,250,0.3) 0%, rgba(80,255,252,0.1) 100%)",
-                backdropFilter: "blur(20px) ",
+                background: "linear-gradient(90deg, rgba(0,255,250,0.2) 0%, rgba(80,0,252,0.1) 100%)",
+                backdropFilter: "blur(4px) ",
                 // WebkitBackdropFilter: "blur(12px) brightness(110%)",
 
                 border: "1px solid rgba(255, 255, 255, 0.25)",

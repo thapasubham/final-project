@@ -143,7 +143,7 @@ function UserList({ role }: { role: string }) {
           <MenuItem value="email">Email</MenuItem>
           <MenuItem value="phoneNumber">Phone No</MenuItem>
         </Select>
-      </Box>
+      </Box >
 
       {error && (
         <Typography align="center" color="error" mb={2}>
@@ -152,7 +152,9 @@ function UserList({ role }: { role: string }) {
       )}
 
       {loading ? (
-        <Box>
+        <Box 
+        
+        >
           <TableHeaderSkeleton rows={limit} columns={4} />
           <TablePagination
             component="div"

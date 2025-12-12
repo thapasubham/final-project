@@ -136,16 +136,15 @@ function User({ userData }: UserProps) {
    return (
     <TableRow
       hover
-      component={RouterLink}         // Make the entire row a link
-      to={`/profile/${userData.id}`} // Destination
-      sx={{
+      component={RouterLink}         
+      to={`/profile/${userData.id}`} sx={{
         textDecoration: 'none',
-        color: 'inherit',            // Keep text color
+        color: 'inherit',            
         '&:hover': { backgroundColor: 'action.hover' }
       }}
     >
       <TableCell>
-        <Typography sx={{ color: 'primary.main', fontWeight: 'bold' }}>
+        <Typography>
           {userData.firstname}
         </Typography>
       </TableCell>
