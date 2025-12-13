@@ -2,7 +2,7 @@ import { Box, Card, IconButton, Typography } from "@mui/material";
 import type { preview } from "../../types/previewTypes.ts";
 import { API_URL } from "../../utils/config.ts";
 import { useEffect, useState } from "react";
-import { ContentCopyRounded } from "@mui/icons-material";
+import { ContentCopyRounded, Shop, Shop2Outlined, ShoppingCart } from "@mui/icons-material";
 import { FontSkeleton } from "./FontSkeleton.tsx";
 
 interface Font {
@@ -188,8 +188,8 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                         size="small"
                         sx={{ p: 0.5, mt: "2px" }} // Fine-tuning spacing if needed
                     >
-                        <ContentCopyRounded fontSize="small" />
-                    </IconButton>
+<ShoppingCart/>    
+                </IconButton>
                 </Box>
                 <Box
                     sx={{

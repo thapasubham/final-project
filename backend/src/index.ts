@@ -17,24 +17,28 @@ import {
   seedUserRole,
 } from "./seed/seed.js";
 import { gql_dataSource } from "./app/graphql/datasource/index.js";
-import { seedUsers } from "./seed/seedUser.js";
 
 async function startServer() {
   const app = express();
-
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
   const frontendUrl = process.env.URL || "http://localhost:5000";
 
   app.use(
     cors({
-      origin: frontendUrl, // must match frontend exactly
-      credentials: true, // allow cookies/auth headers
+      origin: frontendUrl, 
+      credentials: true, 
     })
   );
+  app.use(
+    "/api/payment/webhook",
+    express.raw({ type: "application/json" }),
+    routes.payment 
+  );
+  app.use(express.urlencoded({ extended: true }));
+
+  app.use("/api/payment", express.json(), routes.payment);
+
   app.use("/api/font", routes.fontRoute);
   app.use("/api/lang", routes.langRoute);
-  app.use("/api/payment", routes.payment);
 
   app.use("/api/users", routes.userRouter);
   app.use("/api/roles", routes.rolesRoutes);
@@ -75,11 +79,11 @@ async function startServer() {
 AppDataSource.initialize()
   .then(async () => {
     console.log("Data Source has been initialized!");
-    seedUserRole();
-    seedPermission();
-    seedAdminRole();
+    // seedUserRole();
+    // seedPermission();
+    // seedAdminRole();
     startServer();
-    seedAdminUser();
+    // seedAdminUser();
   })
   .catch((err) => {
     console.error("Error during Data Source initialization:", err);

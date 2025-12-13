@@ -1,25 +1,14 @@
-import { Request, Response } from "express";
-import Stripe from "stripe";
-import express from "express";
+import { Router } from "express";
+import PaymentController from "../controller/payment.controller";
+import PaymentService from "../service/payment.service";
 
-const STRIPE_PRIVATE_KEY = process.env.STRIPE_PRIVATE_KEY
-const stripe = new Stripe(STRIPE_PRIVATE_KEY);
-const route = express.Router();
+const router = Router();
+const service = new PaymentService()
+const controller = new PaymentController(service);
 
-route.post("/create_intent", async (req: Request, res: Response) => {
-  const { amount } = req.body;
-  console.log(STRIPE_PRIVATE_KEY)
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount || 500, // default $5
-      currency: "usd",
-      payment_method_types: ["card"],
-      
-    });
-    console.log(paymentIntent)
-    res.json({ client_secret: paymentIntent.client_secret });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
-  }
-});
-export const payment = route;
+router.post("/create-payment-intent", controller.createPaymentIntent);
+router.post("/create-checkout-session", controller.createCheckoutSession);
+
+router.post("/webhook", controller.webhook); // Stripe webhook
+
+export  const payment = router;

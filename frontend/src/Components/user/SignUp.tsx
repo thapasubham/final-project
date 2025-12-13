@@ -90,6 +90,8 @@ export function SignUp() {
                 p: 4,
                 boxShadow: 3,
                 borderRadius: 2,
+            background: "linear-gradient(270deg, rgba(255, 150, 255, 0.04) 0%, rgba(100, 255, 255, 0.1) 100%)",
+
             }}
         >
             <Typography variant="h5" mb={2}>

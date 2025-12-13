@@ -200,7 +200,7 @@ export function Profile() {
                                             borderRadius: 2,
                                             py: 1.5,
                                             textTransform: "none",
-                                            background: "linear-gradient(90deg, rgba(0,0,250,0.3) 0%, rgba(0,0,255,0.5) 100%)",
+                                            background: "linear-gradient(90deg, rgba(100, 50, 255, 0.4) 0%, rgba(20,20, 255, 0.35) 100%)",
                                             fontWeight: 600,
                                             fontSize: "1rem"
                                         }}
