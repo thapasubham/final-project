@@ -10,11 +10,16 @@ export default class StripeService {
       automatic_payment_methods: { enabled: true },
     });
   }
-
- async createCheckoutSession(productName: string, amount: number, successUrl: string, cancelUrl: string) {
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
+  async createCheckoutSession(
+    productName: string,
+    amount: number,
+    successUrl: string,
+    cancelUrl: string,
+    metadata: { userId: number; fontId: number }
+  ) {
+    return stripe.checkout.sessions.create({
       mode: "payment",
+      payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
@@ -25,11 +30,12 @@ export default class StripeService {
           quantity: 1,
         },
       ],
+      metadata,
       success_url: successUrl,
       cancel_url: cancelUrl,
     });
-    return session; // this has session.url for frontend redirect
   }
+
   constructEvent(payload: Buffer, signature: string) {
     return stripe.webhooks.constructEvent(
       payload,
