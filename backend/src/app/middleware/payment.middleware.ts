@@ -111,3 +111,18 @@ export async function checkFontPurchased(
     res.status(500).json({ error: "Server error" });
   }
 }
+
+export async function isFree(req: Request, res: Response, next: NextFunction) {
+  const fontId = Number(req.params.fontId || req.body.fontId);
+
+  const font = await fontdb.findFontById(fontId);
+  if (!font) {
+    return res.status(404).send({ error: "Font not found" });
+  }
+
+  if (Number(font.price) !== 0) {
+    return res.status(402).send({ error: "Payment Required" });
+  }
+
+  next();
+}

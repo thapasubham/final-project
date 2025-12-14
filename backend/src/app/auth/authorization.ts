@@ -34,7 +34,7 @@ export class Auth {
         const role = decoded_token.role;
         const decode_id = Number(decoded_token.id);
         const rolePermission = await Auth.getPermission(role, permission);
-        const id = Number(req.params.id);
+        const id = Number(req.params.id || 0);
 
         if (id === decode_id || rolePermission) {
           return next();
@@ -59,7 +59,6 @@ export class Auth {
 
   static async Decode(token: string) {
     try {
-      console.log(jwt.verify(token, process.env.SECRET));
       return jwt.verify(token, process.env.SECRET);
     } catch (e) {
       throw new HttpError(e.message, 401);
@@ -68,7 +67,6 @@ export class Auth {
 
   static async getDecodedToken(req: Request) {
     let token = req.headers.authorization;
-    console.log(token);
     if (!token) {
       throw new HttpError(
         constants.UNAUTHORIZED_MSG,
@@ -78,7 +76,6 @@ export class Auth {
     token = token.split(" ")[1];
 
     const decoded = await Auth.Decode(token);
-    console.log(decoded);
     return decoded;
   }
 

@@ -4,6 +4,7 @@ import PaymentService from "../service/payment.service";
 import {
   checkAlreadyPurchased,
   fontExists,
+  isFree,
   userExists,
 } from "../middleware/payment.middleware";
 
@@ -22,6 +23,7 @@ router.post(
   userExists as any,
   fontExists as any,
   checkAlreadyPurchased as any,
+  isFree as any,
   controller.freePurchase
 );
 
