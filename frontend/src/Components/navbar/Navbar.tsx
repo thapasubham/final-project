@@ -3,9 +3,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext.tsx";
 
 export default function NavBar() {
-    const { isLogged, userID, userStatus } = useAuth();
+    const { isLogged, userID, userStatus, permission } = useAuth();
 
-    // Shared button style for glass + hover effect
     const buttonStyle = {
         color: "black",
         mx: 1,
@@ -21,6 +20,7 @@ export default function NavBar() {
 
         },
     };
+    const canUploadFont = permission.includes("font:upload");
 
     return (
         <AppBar
@@ -52,7 +52,11 @@ export default function NavBar() {
 
                 {isLogged ? (
                     <>
-
+                        {canUploadFont && (
+                            <Button component={Link} to="/designer/uploadFont" sx={buttonStyle}>
+                                Upload Font
+                            </Button>
+                        )}
                         {userStatus == "admin" && <Button component={Link} to="/dashboard" sx={buttonStyle}>
                             Dashboard
                         </Button>
@@ -66,6 +70,7 @@ export default function NavBar() {
                     </>
                 ) : (
                     <>
+
                         <Button component={Link} to="/login" sx={buttonStyle}>
                             Login
                         </Button>

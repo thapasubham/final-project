@@ -7,3 +7,4 @@ export function parseBody(req: Request) {
   const payload = req.body;
   return payload;
 }
+

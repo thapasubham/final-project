@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../auth/AuthContext.tsx";
-import { Container, Tabs, Tab, Box } from "@mui/material";
+import { Container, Tabs, Tab, Box, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 import UserList from "./userList.tsx";
 
 function DashBoard() {
@@ -24,7 +25,17 @@ function DashBoard() {
 
   return (
     <Container sx={{ mt: 4 }}>
+      <Button
+        component={Link}
+        to="/admin/role"
+        variant="contained"
+        color="primary"
+        sx={{ mb: 2 }}
+      >
+        Go to Role Panel
+      </Button>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+
         <Tabs
           value={tabIndex}
           onChange={handleChange}
@@ -32,7 +43,7 @@ function DashBoard() {
           variant="scrollable"
           scrollButtons="auto"
         >
-          {tabs.map((tab, index) => (
+          {tabs.map((tab) => (
             <Tab key={tab.role} label={tab.label} />
           ))}
         </Tabs>

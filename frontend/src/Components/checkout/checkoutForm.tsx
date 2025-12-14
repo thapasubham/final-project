@@ -4,8 +4,9 @@ import { Elements, CardElement, useStripe, useElements } from "@stripe/react-str
 import { getStripe, CARD_ELEMENT_OPTIONS, API_URL } from "../../utils/config"; // your config
 import { Box, Button, Typography, Paper, Alert, CircularProgress } from "@mui/material";
 import { useAuth } from "../../auth/AuthContext";
+import { getCookie } from "../../api/apiHelpers";
 
-const CheckoutForm = ({ fontId, userId }: { fontId: number; userId: number }) => {
+const CheckoutForm = ({ fontId, userId, price }: { fontId: number; userId: number, price: number }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -14,6 +15,37 @@ const CheckoutForm = ({ fontId, userId }: { fontId: number; userId: number }) =>
   const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (price === 0) {
+      setLoading(true);
+      try {
+        const res = await fetch(`${API_URL}/api/payment/free-purchase`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ fontId, userID: userId }),
+        });
+
+        const data = await res.json();
+        console.log(data)
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to claim free font");
+        }
+
+        setMessage("Font added to your library for free!");
+        setPaymentStatus("succeeded");
+      } catch (err: any) {
+        setMessage(err.message || "Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+
+      return; // stop Stripe flow
+    }
+
+
+
     if (!stripe || !elements) return;
 
     setLoading(true);
@@ -62,76 +94,91 @@ const CheckoutForm = ({ fontId, userId }: { fontId: number; userId: number }) =>
         Secure Checkout
       </Typography>
 
-      <Box
-        sx={{
-          p: 2,
-          border: "1px solid #444",
-          borderRadius: 2,
-          bgcolor: "black",
-          mb: 3,
-        }}
-      >
-        <CardElement options={CARD_ELEMENT_OPTIONS} />
-      </Box>
+      {price > 0 && (
+        <Box
+          sx={{
+            p: 2,
+            border: "1px solid #444",
+            borderRadius: 2,
+            bgcolor: "black",
+            mb: 3,
+          }}
+        >
+          <CardElement options={CARD_ELEMENT_OPTIONS} />
+        </Box>
+      )}
 
       <Button
         type="submit"
         fullWidth
         variant="contained"
         color="primary"
-        disabled={!stripe || loading || paymentStatus === "succeeded"}
+        disabled={(price > 0 && (!stripe || !elements)) || loading || paymentStatus === "succeeded"}
         onClick={handleSubmit}
-        sx={{ py: 1.5, fontWeight: "bold" }}
+        sx={{
+          py: 1.5, fontWeight: "bold",
+          background: price === 0 ? "#2ecc71" : "blue",
+
+        }}
       >
-        {loading ? <CircularProgress size={24} color="inherit" /> : "Pay Now"}
+        {loading ? (
+          <CircularProgress size={24} color="inherit" />
+        ) : price === 0 ? (
+          "Get For Font"
+        ) : (
+          "Pay Now"
+        )}
       </Button>
 
-      {message && (
-        <>
-          <Box sx={{ gap: 1, display: "flex", flexDirection: "column" }}>
-            <Alert
-              severity={message.includes("successful") ? "success" : "error"}
-              sx={{ mt: 3 }}
-            >
-              {message}
-            </Alert>
-            <Typography color="white" sx={{
-              alignItems: "center",
-              textAlign: "center"
-            }}>Go To Purchase to download</Typography>
-            <Box sx={{
-              display: "flex",
-              flexDirection: "row",
-              gap: 2,
-            }}>
-              <Button
-                fullWidth
-                onClick={() => navigate("/")}
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  py: 1.5,
 
-                }}
+      {
+        message && (
+          <>
+            <Box sx={{ gap: 1, display: "flex", flexDirection: "column" }}>
+              <Alert
+                severity={paymentStatus == "succeeded" ? "success" : "error"}
+                sx={{ mt: 3 }}
               >
-                Home
-              </Button>
-              <Button
-                fullWidth
-                onClick={() => navigate(`/user/${userId}/purchases`)}
-                sx={{
-                  color: "white",
-                  fontWeight: "bold",
-                  py: 1.5,
+                {message}
+              </Alert>
+              <Typography color="white" sx={{
+                alignItems: "center",
+                textAlign: "center"
+              }}>Go To Purchase to download</Typography>
+              <Box sx={{
+                display: "flex",
+                flexDirection: "row",
+                gap: 2,
+              }}>
+                <Button
+                  fullWidth
+                  onClick={() => navigate("/")}
+                  sx={{
+                    color: "white",
+                    fontWeight: "bold",
+                    py: 1.5,
 
-                }}
-              >
-                My Purchases
-              </Button>
+                  }}
+                >
+                  Home
+                </Button>
+                <Button
+                  fullWidth
+                  onClick={() => navigate(`/user/${userId}/purchases`)}
+                  sx={{
+                    color: "white",
+                    fontWeight: "bold",
+                    py: 1.5,
+
+                  }}
+                >
+                  My Purchases
+                </Button>
+              </Box>
             </Box>
-          </Box>
-        </>)}
-    </Paper>
+          </>)
+      }
+    </Paper >
   );
 };
 
@@ -170,8 +217,9 @@ const PaymentAdd = () => {
   return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
       <Elements stripe={stripePromise}>
-        <CheckoutForm fontId={fontId} userId={userId} />
+        <CheckoutForm fontId={fontId} userId={userId} price={Number(queryParams.get("price") || 0)} />
       </Elements>
+
     </Box>
   );
 };

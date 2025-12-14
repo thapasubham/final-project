@@ -9,15 +9,13 @@ export default function RoleProtectedRoute({
     children: React.ReactNode;
     allowedRoles: string[];
 }) {
-    const { isLogged, userStatus, } = useAuth();
-
-    // Not logged in → redirect to login
+    const { isLogged, permission, } = useAuth();
+    const isAllowed = allowedRoles.some(p => permission.includes(p));
     if (!isLogged) {
         return <Navigate to="/login" replace />;
     }
 
-    // Logged in but role is not allowed → redirect to unauthorized page
-    if (!allowedRoles.includes(userStatus)) {
+    if (!isAllowed) {
         return <Navigate to="/unauthorized" replace />;
     }
 

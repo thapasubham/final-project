@@ -18,8 +18,6 @@ import { getUserPurchases } from "../../api/payment/getUserPurchases";
 import { Refresh } from "../../api/refresh/refresh";
 import { Download } from "@mui/icons-material";
 import { useAuth } from "../../auth/AuthContext";
-import { API_URL } from "../../utils/config";
-import { getCookie } from "../../api/apiHelpers";
 import { downloadFont } from "../../api/download/download";
 
 const PurchaseHistory = () => {

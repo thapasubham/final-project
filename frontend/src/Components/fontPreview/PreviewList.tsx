@@ -139,7 +139,7 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
     const handleRowClick = async (font: font) => {
         setSelectedFont(font);
 
-        navigate(`/payment/?fontId=${font.id}`)
+        navigate(`/payment/?fontId=${font.id}&price=${font.price}`)
 
     };
     const handleText = (e: React.ChangeEvent<HTMLInputElement>) => {

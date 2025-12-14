@@ -23,7 +23,7 @@ export class FontsController {
     const offset = Number(req.query.offset) || 0;
     const limit = Number(req.query.limit) || 5;
     const { lang, search, order_by } = req.query;
-    const mostPurchased: boolean = req.query.mostPurchased === 'true' || false;
+    const mostPurchased: boolean = req.query.mostPurchased === "true" || false;
     const langs = lang as string;
     const fileName = await this.fontService.ReadFont(
       limit,
@@ -31,7 +31,7 @@ export class FontsController {
       langs,
       search as string,
       order_by as "ASC" | "DESC",
-      mostPurchased      
+      mostPurchased
     );
     res.send(fileName);
   }

@@ -9,12 +9,13 @@ export class fontdb {
     const fontDate = respository.create({
       name: font.name,
       fileName: font.fileName,
+      createdBy: font.createdBy,
       langs: languages,
     });
 
     const result = await respository.save(fontDate);
 
-    return result;
+    return font;
   }
   static async Read(
     limit: number,
