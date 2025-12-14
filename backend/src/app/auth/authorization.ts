@@ -6,7 +6,6 @@ import { HttpError } from "../middleware/error.js";
 import { constants } from "../../constants/constant.js";
 import { RolesDB } from "../respository/roles.db.js";
 
-
 export class Auth {
   static async isAuthenticated(
     req: Request,

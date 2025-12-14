@@ -40,7 +40,7 @@ router.delete(
 );
 router.put(
   "/:id",
-  Auth.isAuthorized(PermissionType.EDIT),
+  Auth.isAuthorized(PermissionType.ADMIN_EDIT),
   checkID,
   validate,
   unique.isUnique.bind(unique),

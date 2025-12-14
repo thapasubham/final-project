@@ -105,7 +105,7 @@ export function EditUser() {
         while (attempts < maxAttempts) {
             try {
                 const result = await editUser(payload);
-
+                console.log("the result is", result)
                 if (result.status === 200) {
                     notify(result.message, "success");
                     setTimeout(() => {
@@ -118,7 +118,7 @@ export function EditUser() {
                     return;
                 }
 
-                if (result.status === 401) {
+                if (result.status === 401 && attempts > maxAttempts) {
                     const refreshed = await Refresh(userStatus);
                     if (!refreshed) {
                         navigate("/login");
@@ -132,11 +132,16 @@ export function EditUser() {
                     setFormError({ ...formError, ...result.message });
                     return;
                 }
+                console.log("hello")
+                notify(result.message.message, "error")
 
-                setError(result.message || "Failed to update user");
+                setError(result.message.message || "Failed to update user");
+                setLoading(false)
+
                 return;
 
             } catch (err: any) {
+                notify(err.data.message, "error")
                 setError(err.message);
 
                 return;
@@ -161,7 +166,7 @@ export function EditUser() {
                     p: 4,
                     boxShadow: 3,
                     borderRadius: 2,
-            background: "linear-gradient(90deg, rgba(255, 150, 255, 0.04) 0%, rgba(100, 255, 255, 0.21) 100%)",
+                    background: "linear-gradient(90deg, rgba(255, 150, 255, 0.04) 0%, rgba(100, 255, 255, 0.21) 100%)",
                 }}
                 component="form"
                 onSubmit={handleSubmit}

@@ -14,7 +14,7 @@ export default class PaymentService {
   private stripe = new StripeService();
 
   // Create a Stripe payment intent and save a pending record
-  async createPaymentIntent(data: { userID: number; fontId: number }) {
+  async   createPaymentIntent(data: { userID: number; fontId: number }) {
     const { userID, fontId } = data;
 
     const font = await fontRepo.findOne({ where: { id: fontId } });

@@ -17,7 +17,7 @@ export async function editUser(payload: userPayload) {
     return { status: result.status, message: result.data.message };
   } catch (err) {
     const { status, message, response } = err as AxiosError;
-    console.log(err)
+    console.log(response);
     return { status: status, message: response ? response.data : message };
   }
 }

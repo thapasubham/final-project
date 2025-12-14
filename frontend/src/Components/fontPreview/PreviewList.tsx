@@ -2,12 +2,14 @@ import type { preview } from "../../types/previewTypes.ts";
 import { Suspense, useEffect, useRef, useState } from "react";
 import getFonts from "../../api/getFonts.ts";
 import { Button, ToggleButtonGroup, ToggleButton, Typography, Box, Drawer, TextField, InputAdornment, } from "@mui/material";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowForward, GridView, Restore, Search, TableRows, Warning, } from "@mui/icons-material";
-import Embed from "./embed.tsx";
 import { languageLists } from "../../constants/languageText.ts";
 import Loading from "../loading/loading.tsx";
 import PreviewRow from "./previewRow.tsx";
+import { API_URL } from "../../utils/config.ts";
+import { useNotification } from "../../notification/notificationContext.tsx";
+import { useAuth } from "../../auth/AuthContext.tsx";
 
 type font = {
     id: number,
@@ -19,6 +21,7 @@ type font = {
 function PreviewList({ previewText, preview, reset, setReset }: { previewText: string, preview: preview; reset: boolean; setReset: (val: boolean) => void }) {
     const [missingGlyphs, setMisssingGlyphs] = useState(false);
     const [sampletext, setSampleText] = useState("");
+    const { isLogged, userID } = useAuth();
     const [img, setImg] = useState<font[]>([]);
     const [searchParam, setParam] = useSearchParams();
     const paramLang = searchParam.get("lang");
@@ -26,6 +29,8 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
     const searchQ = searchParam.get("search");
     const [offset, setOffset] = useState(Number(paramOffset) || 0);
     const [selectedFont, setSelectedFont] = useState<font | null>(null);
+    const notify = useNotification();
+    const navigate = useNavigate();
     const [error, setError] = useState("")
     const [language, setLanguage] = useState<string>(() => paramLang ? paramLang : "");
     const tempOffset = useRef(0);
@@ -132,8 +137,25 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
         }, 50)
         return () => clearTimeout(delay);
     };
-    const handleRowClick = (font: font) => {
+    const handleRowClick = async (font: font) => {
         setSelectedFont(font);
+        try {
+            console.log(font, "user", userID)
+            const result = await fetch(`${API_URL}/api/payment/create-payment-intent`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ fontId: font.id, userID: userID })
+                }
+            )
+
+            const data = await result.json()
+            navigate("/checkoutform")
+        } catch (e) {
+            notify(e.message, "error")
+        }
     };
     const handleText = (e: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -287,14 +309,14 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
                     </Box>
 
                 </>)}
-                <Drawer
+                {/* <Drawer
                     anchor="right"
                     open={Boolean(selectedFont)}
                     onClose={() => setSelectedFont(null)}
                 >
                     <Embed selectedFont={selectedFont} onClose={() => setSelectedFont(null)} />
 
-                </Drawer>
+                </Drawer> */}
 
                 <Box
                     sx={{

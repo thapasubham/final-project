@@ -188,7 +188,7 @@ export function Profile() {
                             </Box>
 
                             {/* Actions */}
-                            {allowEdit && (
+                            {(
                                 <Box width="100%" mt={2}>
                                     <Button
                                         component={Link}

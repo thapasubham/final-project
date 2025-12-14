@@ -35,7 +35,7 @@ export function Router() {
                     <Route path='/profile/:id' element={<Profile />} />
                     <Route path='/unauthorized' element={<Unauthorized />} />
                     <Route path='/unauthorized' element={<Unauthorized />} />
-                    <Route path='/payment-success' element={ } />
+                    <Route path='/payment-success' element={<>Hello</>} />
                 </Routes>
             </Suspense>
 

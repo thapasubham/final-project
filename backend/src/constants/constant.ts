@@ -1,7 +1,7 @@
 export const constants = {
-  UNAUTHORIZED_MSG: "Unauthorized",
+  UNAUTHORIZED_MSG: "Unauthorized to perform the task.",
   UNAUTHORIZED_STAUTS: 401,
-  NO_MORE_USER: "Couldn't find the data you were looking for",
+  NO_MORE_USER: "Couldn't find the data you were looking for.",
   NO_USER: "User doesn't exists",
   PASSWORD_DOESNT_MATCH: "Password doesn't match",
   NO_PERMISSION_FOUND: "Permission doesn't exist",
@@ -15,5 +15,5 @@ export const constants = {
   PHONE_EXISTS: "Phone already exists",
   EMPTY_TOKEN: "Empty Token",
   DEFAULY_PASSWORD: process.env.DEFAULT_PASSWORD,
-  MISSING_UNIQUE: "Email and phone number are required"
+  MISSING_UNIQUE: "Email and phone number are required",
 };

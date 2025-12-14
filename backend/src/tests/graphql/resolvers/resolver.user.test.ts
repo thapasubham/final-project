@@ -22,7 +22,7 @@ describe("User Resolver test", () => {
         phoneNumber: "9876543210",
       };
       readStub.resolves(data);
-      const result = await userResolvers.Query.getusers(
+      const result = await userResolvers.Query.getuser(
         {},
         { id: 5 },
         { dataSource: dataSource }
@@ -57,7 +57,7 @@ describe("User Resolver test", () => {
         },
       ];
       readStub.resolves(data);
-      const result = await userResolvers.Query.getusers(
+      const result = await userResolvers.Query.getuser(
         {},
         { limit: 5, offset: 5 },
         { dataSource: dataSource }

@@ -52,4 +52,17 @@ export class fontdb {
 
     return { fonts: result, count };
   }
+
+  static async findFontById(id: number) {
+    const font = await respository.findOne({
+      where: { id },
+      relations: ["langs"],
+    });
+
+    if (!font) {
+      throw new Error(`Font with ID ${id} not found`);
+    }
+
+    return font;
+  }
 }

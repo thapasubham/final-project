@@ -20,7 +20,8 @@ export default class PaymentController {
   };
   createPaymentIntent = async (req: Request, res: Response) => {
     try {
-      const result = await this.service.createPaymentIntent(req.body);
+      const { userID, fontId } = req.body;
+      const result = await this.service.createPaymentIntent({ userID, fontId });
 
       console.log(result);
       const response: responseType<{ clientSecret: string }> = {

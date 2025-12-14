@@ -197,22 +197,28 @@ describe("User controller tests ", () => {
       it("No User exists", async () => {
         req = {
           query: {
-            filter: "firstname",
+            search: "", // not filter
+            searchby: "",
             limit: "1",
-            offset: " 5",
+            offset: "5",
+            role: "user",
           },
         };
-        readUsersStub.returns([]);
+
+        readUsersStub.returns({ userList: [], totalCount: 0 });
+
         await userController.GetUsers(req, res);
+
         Sinon.assert.calledOnce(readUsersStub);
         Sinon.assert.calledWith(
           readUsersStub,
-          undefined,
-          undefined,
-          "firstname",
-          1,
-          5,
-          undefined
+          "", // search
+          "", // searchby
+          "user.id", // sort_by default
+          1, // limit (number)
+          5, // offset (number)
+          "ASC", // order default
+          "user" // role
         );
 
         Sinon.assert.calledOnce(writeResponseStub);
@@ -224,14 +230,16 @@ describe("User controller tests ", () => {
       it("Users exists", async () => {
         req = {
           query: {
-            select: "",
-            selectBy: "",
-            filter: "",
-            orderBy: "",
+            search: "",
+            searchby: "",
+            sort_by: "",
+            order: "ASC",
             limit: "1",
             offset: "5",
+            role: "user",
           },
         };
+
         let userData = [
           {
             firstname: "Subham",
@@ -258,24 +266,35 @@ describe("User controller tests ", () => {
             role: new Role(),
           },
         ];
-        readUsersStub.returns(userData);
+
+        readUsersStub.returns({
+          userList: userData,
+          totalCount: userData.length,
+        });
+
         await userController.GetUsers(req, res);
+
         Sinon.assert.calledOnce(readUsersStub);
         Sinon.assert.calledWith(
           readUsersStub,
-          undefined,
-          undefined,
-          "",
-
-          1,
-          5,
-          ""
+          "", // search
+          "", // searchby
+          "", // sort_by passed as empty
+          1, // limit
+          5, // offset
+          "ASC", // order default applied
+          "user" // role
         );
 
         Sinon.assert.calledOnce(writeResponseStub);
         Sinon.assert.calledWith(writeResponseStub, res, {
           status: 200,
-          data: userData,
+          data: {
+            users: userData,
+            totalCount: userData.length,
+            limit: 1,
+            offset: 5,
+          },
         });
       });
     });
