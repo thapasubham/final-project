@@ -8,7 +8,28 @@ export default class PaymentController {
   constructor(service: PaymentService) {
     this.service = service;
   }
+  freePurchase = async (req: Request, res: Response) => {
+    try {
+      const { userID, fontId } = req.body;
+      const result = await this.service.createPaymentIntent({ userID, fontId });
 
+      console.log(result);
+      const response: responseType<{ clientSecret: string }> = {
+        status: 201,
+        message: "Payment Intent Created",
+        data: { clientSecret: result.clientSecret },
+      };
+
+      ResponseApi.WriteResponse(res, response);
+    } catch (err: any) {
+      const response: responseType<null> = {
+        status: 400,
+        message: err.message || "Failed to create payment intent",
+      };
+
+      ResponseApi.WriteResponse(res, response);
+    }
+  };
   createPaymentIntent = async (req: Request, res: Response) => {
     try {
       const { userID, fontId } = req.body;

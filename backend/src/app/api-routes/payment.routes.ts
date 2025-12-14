@@ -17,6 +17,13 @@ router.post(
   checkAlreadyPurchased as any,
   controller.createPaymentIntent
 );
+router.post(
+  "/free-purchase",
+  userExists as any,
+  fontExists as any,
+  checkAlreadyPurchased as any,
+  controller.freePurchase
+);
 
 router.post("/webhook", controller.webhook); // Stripe webhook
 

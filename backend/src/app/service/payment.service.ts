@@ -20,6 +20,17 @@ export default class PaymentService {
     const font = await fontRepo.findOne({ where: { id: fontId } });
     if (!font) throw new Error("Font not found");
 
+    if (Number(font.price) === 0) {
+      //free font
+      await this.handleFreePurchase(userID, fontId);
+      if (Number(font.price) === 0) {
+        await this.handleFreePurchase(userID, fontId);
+        return {
+          clientSecret: "",
+          isFree: true,
+        };
+      }
+    }
     const amountCents = Math.round(font.price * 100);
 
     const intent = await this.stripe.createPaymentIntent(
@@ -88,5 +99,32 @@ export default class PaymentService {
       default:
         console.log("Unhandled Stripe event:", event.type);
     }
+  }
+
+  private async handleFreePurchase(userID: number, fontId: number) {
+    const exists = await userFontRepo.findOne({
+      where: {
+        user: { id: userID },
+        font: { id: fontId },
+      },
+    });
+
+    if (exists) return;
+
+    await userFontRepo.save({
+      user: { id: userID },
+      font: { id: fontId },
+      purchasedAt: new Date(),
+    });
+
+    const payment = paymentRepo.create({
+      stripePaymentId: `FREE-${userID}-${fontId}`,
+      status: PaymentStatus.SUCCESS,
+      amount: 0,
+      user: { id: userID },
+      font: { id: fontId },
+    });
+
+    await paymentRepo.save(payment);
   }
 }

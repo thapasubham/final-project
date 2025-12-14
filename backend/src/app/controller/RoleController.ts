@@ -1,4 +1,3 @@
-
 import { Request, Response } from "express";
 import { RoleService } from "../service/RoleService";
 import { ResponseApi } from "../../utils/ApiResponse";
@@ -10,8 +9,8 @@ export class RoleController {
     ResponseApi.WriteResponse(res, { status: 200, data: result });
   }
   async CreateRole(req: Request, res: Response) {
-    const role = req.body;
-
+    let role = req.body;
+    role.name = role.name.toLowerCase();
     const result = await roleService.CreateRole(role);
 
     ResponseApi.WriteResponse(res, { status: 201, data: result });
