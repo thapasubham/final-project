@@ -50,7 +50,7 @@ export function Profile() {
             let response = await getUserByid(Number(id));
 
             if (response.status === 401) {
-                const refreshed = await Refresh(userStatus); // should update token in storage/axios headers
+                const refreshed = await Refresh(); // should update token in storage/axios headers
                 if (refreshed) {
                     response = await getUserByid(Number(id)); // retry
                 } else {
@@ -189,25 +189,50 @@ export function Profile() {
 
                             {/* Actions */}
                             {(
-                                <Box width="100%" mt={2}>
-                                    <Button
-                                        component={Link}
-                                        to={`/editUser/${user.id}`}
-                                        variant="contained"
-                                        endIcon={<EditIcon />}
-                                        fullWidth
-                                        sx={{
-                                            borderRadius: 2,
-                                            py: 1.5,
-                                            textTransform: "none",
-                                            background: "linear-gradient(90deg, rgba(100, 50, 255, 0.4) 0%, rgba(20,20, 255, 0.35) 100%)",
-                                            fontWeight: 600,
-                                            fontSize: "1rem"
-                                        }}
-                                    >
-                                        Edit Profile
-                                    </Button>
-                                </Box>
+                                <>
+                                    <Box width="100%" mt={2}>
+                                        <Button
+                                            component={Link}
+                                            to={`/editUser/${user.id}`}
+                                            variant="contained"
+                                            endIcon={<EditIcon />}
+                                            fullWidth
+                                            sx={{
+                                                borderRadius: 2,
+                                                py: 1.5,
+                                                textTransform: "none",
+                                                background: "linear-gradient(90deg, rgba(100, 50, 255, 0.4) 0%, rgba(20,20, 255, 0.35) 100%)",
+                                                fontWeight: 600,
+                                                fontSize: "1rem",
+                                                "&:hover": {
+                                                    background: "linear-gradient(90deg, rgba(100, 50, 255, 0.5) 0%, rgba(20,20, 255, 0.45) 100%)",
+                                                },
+                                            }}
+                                        >
+                                            Edit Profile
+                                        </Button>
+                                    </Box>
+                                    <Box width="100%" mt={2}>
+                                        <Button
+                                            variant="contained"
+                                            fullWidth
+                                            sx={{
+                                                borderRadius: 2,
+                                                py: 1.5,
+                                                textTransform: "none",
+                                                background: "linear-gradient(90deg, rgba(0,100,255,0.4) 0%, rgba(0,50,200,0.35) 100%)",
+                                                fontWeight: 600,
+                                                fontSize: "1rem",
+                                                "&:hover": {
+                                                    background: "linear-gradient(90deg, rgba(0,120,255,0.5) 0%, rgba(0,70,220,0.5) 100%)",
+                                                },
+                                            }}
+                                            onClick={() => navigate(`/user/${user.id}/purchases`)}
+                                        >
+                                            View Purchase History
+                                        </Button>
+                                    </Box>
+                                </>
                             )}
                         </Stack>
                     </CardContent>

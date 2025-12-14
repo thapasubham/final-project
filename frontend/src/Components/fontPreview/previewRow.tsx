@@ -4,6 +4,7 @@ import { API_URL } from "../../utils/config.ts";
 import { useEffect, useState } from "react";
 import { ContentCopyRounded, Shop, Shop2Outlined, ShoppingCart } from "@mui/icons-material";
 import { FontSkeleton } from "./FontSkeleton.tsx";
+import { useAuth } from "../../auth/AuthContext.tsx";
 
 interface Font {
     id: number;
@@ -28,6 +29,7 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
     const [renderText, setRender] = useState("");
     const fontUrl = `${API_URL}/static/${img.fileName}`;
     const [isLoading, setIsLoading] = useState(true);
+    const { isLogged, userID } = useAuth();
 
     useEffect(() => {
         const link = document.createElement('link');
@@ -183,13 +185,14 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
 
                     </Typography>
 
-                    <IconButton
+                    {isLogged && <IconButton
                         onClick={() => onClickRow(img)}
                         size="small"
                         sx={{ p: 0.5, mt: "2px" }} // Fine-tuning spacing if needed
                     >
-<ShoppingCart/>    
-                </IconButton>
+                        <ShoppingCart />
+                    </IconButton>
+                    }
                 </Box>
                 <Box
                     sx={{

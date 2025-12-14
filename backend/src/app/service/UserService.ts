@@ -2,6 +2,7 @@ import { Auth } from "../auth/authorization";
 import { User } from "../../entity/user";
 import { UserDb } from "../respository/user.db";
 import { Login } from "../../types/login.types";
+import { PaymentDB } from "../respository/payment.db";
 
 /**
  * Class to perfrom CRUD operation
@@ -52,7 +53,7 @@ export class UserService {
    * @param {number} [limit] - Total number of users to retrieve.
    * @param {number} [offset] - Number of users to skip from the start.
    * @param {number} [id] - The ID of the user to return.
-   * @returns {User[]} - The requested users. Always returns array.
+   * @returns {User[], totalCount} - The requested users. Always returns array.
    *
    * @example
    * //Get user by Id
@@ -85,7 +86,7 @@ export class UserService {
       orderBy as "ASC" | "DESC",
       role
     );
-    console.log(filter, searchby, search, orderBy);
+    console.log(result, limit);
 
     return result;
   }
@@ -115,6 +116,23 @@ export class UserService {
 
   async DeleteUnverified(id: number) {
     const result = UserDb.DeleteUnverified(id);
+    return result;
+  }
+
+  async purchasedFonts(
+    userId: number,
+    page = 1,
+    limit = 5,
+    sortBy: "name" | "price" | "purchasedAt" = "purchasedAt",
+    order: "ASC" | "DESC" = "DESC"
+  ) {
+    const result = await PaymentDB.purchasedFonts(
+      userId,
+      Number(page),
+      Number(limit),
+      sortBy as any,
+      order as any
+    );
     return result;
   }
 }

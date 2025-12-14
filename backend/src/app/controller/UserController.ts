@@ -50,7 +50,7 @@ export class UserController {
       (order as string).toUpperCase() as "ASC" | "DESC",
       role as string
     );
-
+    console.log(result);
     if (!result || result.userList.length === 0) {
       response.message = constants.NO_MORE_USER;
       response.status = 404;
@@ -66,7 +66,6 @@ export class UserController {
 
     ResponseApi.WriteResponse(res, response);
   }
-
 
   async GetUser(req: Request, res: Response) {
     const response: responseType<User> = {
@@ -146,5 +145,26 @@ export class UserController {
     }
 
     ResponseApi.WriteResponse(res, response);
+  }
+
+  async PurchasedFonts(req: Request, res: Response) {
+    const userId = Number(req.params.id);
+    const {
+      offset = 1,
+      limit = 5,
+      sortBy = "purchasedAt",
+      order = "DESC",
+    } = req.query;
+    console.log(req.query);
+    console.log(userId, typeof userId);
+    const result = await userService.purchasedFonts(
+      userId,
+      Number(offset),
+      Number(limit),
+      sortBy as any,
+      order as any
+    );
+
+    res.send(result).status(200);
   }
 }

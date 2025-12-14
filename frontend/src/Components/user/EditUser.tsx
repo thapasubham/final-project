@@ -119,7 +119,7 @@ export function EditUser() {
                 }
 
                 if (result.status === 401 && attempts > maxAttempts) {
-                    const refreshed = await Refresh(userStatus);
+                    const refreshed = await Refresh();
                     if (!refreshed) {
                         navigate("/login");
                         return;

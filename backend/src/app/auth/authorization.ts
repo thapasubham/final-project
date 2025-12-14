@@ -14,7 +14,8 @@ export class Auth {
   ) {
     const decoded_token: any = await Auth.getDecodedToken(req);
     const id = Number(req.params.id);
-
+    console.log("hello");
+    console.log(decoded_token, id);
     const decodedID = Number(decoded_token.id);
 
     if (id !== decodedID) {
@@ -58,6 +59,7 @@ export class Auth {
 
   static async Decode(token: string) {
     try {
+      console.log(jwt.verify(token, process.env.SECRET));
       return jwt.verify(token, process.env.SECRET);
     } catch (e) {
       throw new HttpError(e.message, 401);
@@ -66,6 +68,7 @@ export class Auth {
 
   static async getDecodedToken(req: Request) {
     let token = req.headers.authorization;
+    console.log(token);
     if (!token) {
       throw new HttpError(
         constants.UNAUTHORIZED_MSG,
@@ -75,6 +78,7 @@ export class Auth {
     token = token.split(" ")[1];
 
     const decoded = await Auth.Decode(token);
+    console.log(decoded);
     return decoded;
   }
 

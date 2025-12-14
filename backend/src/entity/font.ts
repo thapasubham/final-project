@@ -11,6 +11,7 @@ import { User } from "./user.js";
 
 @Entity("font")
 export class Font {
+
   @PrimaryGeneratedColumn()
   id?: number;
 

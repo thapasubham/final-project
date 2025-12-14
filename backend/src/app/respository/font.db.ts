@@ -56,7 +56,6 @@ export class fontdb {
   static async findFontById(id: number) {
     const font = await respository.findOne({
       where: { id },
-      relations: ["langs"],
     });
 
     if (!font) {

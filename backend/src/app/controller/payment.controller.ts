@@ -9,15 +9,6 @@ export default class PaymentController {
     this.service = service;
   }
 
-  createCheckoutSession = async (req: Request, res: Response) => {
-    try {
-      const result = await this.service.createCheckoutSession(req.body);
-      console.log(result);
-      res.json(result); // returns { url: session.url }
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
-    }
-  };
   createPaymentIntent = async (req: Request, res: Response) => {
     try {
       const { userID, fontId } = req.body;
@@ -43,8 +34,9 @@ export default class PaymentController {
 
   webhook = async (req: Request, res: Response) => {
     try {
-      await this.service.handleWebhook(req);
+      console.log("hello");
 
+      await this.service.handleWebhook(req);
       res.status(200).json({ received: true });
     } catch (err) {
       res.status(400).json({ error: "Webhook Error" });

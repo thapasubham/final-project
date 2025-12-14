@@ -14,7 +14,7 @@ export default class PaymentService {
   private stripe = new StripeService();
 
   // Create a Stripe payment intent and save a pending record
-  async   createPaymentIntent(data: { userID: number; fontId: number }) {
+  async createPaymentIntent(data: { userID: number; fontId: number }) {
     const { userID, fontId } = data;
 
     const font = await fontRepo.findOne({ where: { id: fontId } });
@@ -22,8 +22,11 @@ export default class PaymentService {
 
     const amountCents = Math.round(font.price * 100);
 
-    const intent = await this.stripe.createPaymentIntent(amountCents);
-    console.log(intent);
+    const intent = await this.stripe.createPaymentIntent(
+      amountCents,
+      userID,
+      fontId
+    );
     const payment = paymentRepo.create({
       stripePaymentId: intent.id,
       amount: font.price,
@@ -45,24 +48,21 @@ export default class PaymentService {
     const event = this.stripe.constructEvent(req.body, signature);
 
     switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
-
-        const paymentIntentId = session.payment_intent as string;
-        const userId = Number(session.metadata?.userId);
-        const fontId = Number(session.metadata?.fontId);
-
+      case "payment_intent.succeeded": {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
+        const userId = Number(paymentIntent.metadata?.userId);
+        const fontId = Number(paymentIntent.metadata?.fontId);
+        console.log(fontId);
         if (!userId || !fontId) {
-          throw new Error("Missing metadata in Stripe session");
+          console.error("Missing metadata in Stripe payment intent");
+          return;
         }
 
-        // 1️⃣ Mark payment as SUCCESS
         await paymentRepo.update(
-          { stripePaymentId: paymentIntentId },
+          { stripePaymentId: paymentIntent.id },
           { status: PaymentStatus.SUCCESS }
         );
 
-        // 2️⃣ Grant font ownership
         await userFontRepo.save({
           user: { id: userId },
           font: { id: fontId },
@@ -70,65 +70,23 @@ export default class PaymentService {
 
         break;
       }
+      case "payment_intent.payment_failed": {
+        const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
-      case "checkout.session.async_payment_failed": {
-        const session = event.data.object as Stripe.Checkout.Session;
-
-        await paymentRepo.update(
-          { stripePaymentId: session.payment_intent as string },
+        const result = await paymentRepo.update(
+          { stripePaymentId: paymentIntent.id },
           { status: PaymentStatus.FAILED }
         );
 
+        console.log(
+          `Payment failed for ${paymentIntent.id}, update result:`,
+          result
+        );
         break;
       }
 
       default:
         console.log("Unhandled Stripe event:", event.type);
     }
-  }
-  async createCheckoutSession(data: { userId: number; fontId: number }) {
-    const font = await fontRepo.findOne({ where: { id: data.fontId } });
-    if (!font) throw new Error("Font not found");
-
-    const session = await this.stripe.createCheckoutSession(
-      font.name,
-      Math.round(font.price * 100),
-      `${process.env.URL}/payment-success`,
-      `${process.env.URL}/payment-cancel`,
-      {
-        userId: data.userId,
-        fontId: data.fontId,
-      }
-    );
-
-    await paymentRepo.save(
-      paymentRepo.create({
-        stripePaymentId: session.payment_intent as string,
-        amount: font.price,
-        status: PaymentStatus.PENDING,
-        user: { id: data.userId } as User,
-        font: { id: data.fontId } as Font,
-      })
-    );
-
-    return { url: session.url };
-  }
-
-  // Mark payment as successful
-  async markSuccess(stripePaymentId: string) {
-    const payment = await paymentRepo.findOne({ where: { stripePaymentId } });
-    if (!payment) throw new Error("Payment not found");
-
-    payment.status = PaymentStatus.SUCCESS;
-    await paymentRepo.save(payment);
-  }
-
-  // Mark payment as failed
-  async markFailed(stripePaymentId: string) {
-    const payment = await paymentRepo.findOne({ where: { stripePaymentId } });
-    if (!payment) throw new Error("Payment not found");
-
-    payment.status = PaymentStatus.FAILED;
-    await paymentRepo.save(payment);
   }
 }

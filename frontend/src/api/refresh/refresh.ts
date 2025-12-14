@@ -3,7 +3,7 @@ import { config } from "../apiHelpers.ts";
 import { setTokens } from "./setTokens.ts";
 import { API_URL } from "../../utils/config.ts";
 
-export async function Refresh(userType: string) {
+export async function Refresh() {
   try {
     const refresh = localStorage.getItem("refreshToken");
 

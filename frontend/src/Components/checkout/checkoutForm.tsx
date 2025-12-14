@@ -1,43 +1,18 @@
-import React, { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
+import { useState, useMemo, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-// Assuming this path is correct
-import { API_URL, STRIPE_PUBLIC_KEY } from "../../utils/config"; 
+import { getStripe, CARD_ELEMENT_OPTIONS, API_URL } from "../../utils/config"; // your config
+import { Box, Button, Typography, Paper, Alert, CircularProgress } from "@mui/material";
+import { useAuth } from "../../auth/AuthContext";
 
-// --- Configuration ---
-// Note: Replace this with your actual publishable key in a real application
-const STRIPE_PK = STRIPE_PUBLIC_KEY;
-const stripePromise = loadStripe(STRIPE_PK);
-
-// --- Stripe Element Styling Options ---
-// This is critical for ensuring the CardElement (an iframe) looks clean and standard.
-const CARD_ELEMENT_OPTIONS = {
-  style: {
-    base: {
-      fontSize: "16px",
-      color: "#f9f9f9", // Light color for dark theme
-      fontFamily: "inherit",
-      "::placeholder": {
-        color: "#aab7c4",
-      },
-    },
-    invalid: {
-      color: "#fa755a",
-      iconColor: "#fa755a",
-    },
-  },
-};
-
-const CheckoutForm = () => {
+const CheckoutForm = ({ fontId, userId }: { fontId: number; userId: number }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  
-  // Use a constant for the amount
-  const AMOUNT_TO_PAY = 500000; // $5.00 in cents
-
-  const handleSubmit = async (e: any) => {
+  const [message, setMessage] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState("pending");
+  const navigate = useNavigate();
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!stripe || !elements) return;
 
@@ -45,71 +20,160 @@ const CheckoutForm = () => {
     setMessage("");
 
     try {
-      // 1. Request Payment Intent Client Secret from Backend
-      const res = await fetch(`${API_URL}/api/payment/create_intent`, {
+      const res = await fetch(`${API_URL}/api/payment/create-payment-intent`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: AMOUNT_TO_PAY }),
+        body: JSON.stringify({ fontId, userID: userId }),
       });
-      
-      // Check for non-200 status codes from the API
-      if (!res.ok) {
-        throw new Error("Failed to create payment intent on server.");
-      }
-      
+
       const data = await res.json();
-      const clientSecret = data.client_secret;
 
-      // 2. Confirm Payment on the Frontend
-      const result = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: elements.getElement(CardElement),
-        },
-      });
+      if (res.status === 201) {
+        const { clientSecret } = data;
 
-      // 3. Handle Result
-      if (result.error) {
-        setMessage(result.error.message);
-      } else if (result.paymentIntent.status === "succeeded") {
-        setMessage("Payment successful! Thank you.");
+        const paymentResult = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: elements.getElement(CardElement)!,
+          },
+        });
+
+        if (paymentResult.error) {
+          setMessage(paymentResult.error.message || "Payment failed");
+        } else if (paymentResult.paymentIntent?.status === "succeeded") {
+          setMessage("Payment successful!");
+          setPaymentStatus("succeeded");
+        }
+      } else {
+        setMessage(`Error: ${data.error}`);
+        console.log(data)
+
       }
-    } catch (error) {
-      console.error("Payment Submission Error:", error);
-      setMessage(`An unexpected error occurred: ${error.message}`);
+    } catch (err) {
+      setMessage("Something went wrong. Please try again., ");
+      console.log(err);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 bg-[#1a1a1a] rounded-xl shadow-lg w-full max-w-sm">
-      <h2 className="text-xl font-semibold mb-4 text-white">Secure Checkout</h2>
-      
-      {/* Container for CardElement to control its width and layout */}
-      <div className="p-3 border border-gray-600 rounded-lg bg-black">
-        <CardElement options={CARD_ELEMENT_OPTIONS} />
-      </div>
+    <Paper elevation={6} sx={{ p: 4, maxWidth: 400, width: "100%", bgcolor: "#1a1a1a" }}>
+      <Typography variant="h5" gutterBottom color="white">
+        Secure Checkout
+      </Typography>
 
-      <button 
-        type="submit" 
-        disabled={!stripe || loading} 
-        className="mt-6 w-full py-3 text-lg font-bold rounded-xl transition duration-200 
-                   bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:cursor-not-allowed"
+      <Box
+        sx={{
+          p: 2,
+          border: "1px solid #444",
+          borderRadius: 2,
+          bgcolor: "black",
+          mb: 3,
+        }}
       >
-        {loading ? "Processing..." : `Pay $${(AMOUNT_TO_PAY / 100).toFixed(2)}`}
-      </button>
+        <CardElement options={CARD_ELEMENT_OPTIONS} />
+      </Box>
 
-      {message && <p className={`mt-4 text-center ${message.includes("successful") ? 'text-green-400' : 'text-red-400'}`}>{message}</p>}
-    </form>
+      <Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        color="primary"
+        disabled={!stripe || loading || paymentStatus === "succeeded"}
+        onClick={handleSubmit}
+        sx={{ py: 1.5, fontWeight: "bold" }}
+      >
+        {loading ? <CircularProgress size={24} color="inherit" /> : "Pay Now"}
+      </Button>
+
+      {message && (
+        <>
+          <Box sx={{ gap: 1, display: "flex", flexDirection: "column" }}>
+            <Alert
+              severity={message.includes("successful") ? "success" : "error"}
+              sx={{ mt: 3 }}
+            >
+              {message}
+            </Alert>
+            <Typography color="white" sx={{
+              alignItems: "center",
+              textAlign: "center"
+            }}>Go To Purchase to download</Typography>
+            <Box sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 2,
+            }}>
+              <Button
+                fullWidth
+                onClick={() => navigate("/")}
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  py: 1.5,
+
+                }}
+              >
+                Home
+              </Button>
+              <Button
+                fullWidth
+                onClick={() => navigate(`/user/${userId}/purchases`)}
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  py: 1.5,
+
+                }}
+              >
+                My Purchases
+              </Button>
+            </Box>
+          </Box>
+        </>)}
+    </Paper>
   );
 };
 
-const PaymentAdd = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <Elements stripe={stripePromise}>
-      <CheckoutForm />
-    </Elements>
-  </div>
-);
+const PaymentAdd = () => {
+  const { search } = useLocation();
+  const queryParams = useMemo(() => new URLSearchParams(search), [search]);
+  const { isLogged, userID } = useAuth();
+  const fontId = Number(queryParams.get("fontId"));
+  const userId = userID;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!isLogged) {
+      navigate("/login");
+    }
+  }, [isLogged, navigate]);
+  const stripePromise = getStripe();
+
+  if (!isLogged)
+    return (
+      <CircularProgress />)
+
+  if (!fontId || !userId) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        color="white"
+      >
+        <Typography>Invalid payment details. Please go back and try again.</Typography>
+      </Box>
+    );
+  }
+
+  return (
+    <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+      <Elements stripe={stripePromise}>
+        <CheckoutForm fontId={fontId} userId={userId} />
+      </Elements>
+    </Box>
+  );
+};
 
 export default PaymentAdd;

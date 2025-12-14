@@ -21,7 +21,6 @@ type font = {
 function PreviewList({ previewText, preview, reset, setReset }: { previewText: string, preview: preview; reset: boolean; setReset: (val: boolean) => void }) {
     const [missingGlyphs, setMisssingGlyphs] = useState(false);
     const [sampletext, setSampleText] = useState("");
-    const { isLogged, userID } = useAuth();
     const [img, setImg] = useState<font[]>([]);
     const [searchParam, setParam] = useSearchParams();
     const paramLang = searchParam.get("lang");
@@ -139,23 +138,9 @@ function PreviewList({ previewText, preview, reset, setReset }: { previewText: s
     };
     const handleRowClick = async (font: font) => {
         setSelectedFont(font);
-        try {
-            console.log(font, "user", userID)
-            const result = await fetch(`${API_URL}/api/payment/create-payment-intent`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ fontId: font.id, userID: userID })
-                }
-            )
 
-            const data = await result.json()
-            navigate("/checkoutform")
-        } catch (e) {
-            notify(e.message, "error")
-        }
+        navigate(`/payment/?fontId=${font.id}`)
+
     };
     const handleText = (e: React.ChangeEvent<HTMLInputElement>) => {
 

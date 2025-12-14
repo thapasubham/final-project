@@ -46,6 +46,13 @@ router.put(
   unique.isUnique.bind(unique),
   usersHandler.UpdateUser
 );
+
+router.get(
+  "/:id/purchase",
+  checkQuery,
+  Auth.isAuthorized(PermissionType.ADMIN_VIEW),
+  usersHandler.PurchasedFonts
+);
 router.delete(
   "/:id/delete/",
   Auth.isAuthorized(PermissionType.ADMIN_DELETE),

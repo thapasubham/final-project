@@ -28,22 +28,23 @@ async function startServer() {
       credentials: true,
     })
   );
-  // app.use(
-  //   "/api/payment/webhook",
-  //   express.raw({ type: "application/json" }),
-  //   routes.payment
-  // );
+  app.use(
+    "/api/payment/webhook",
+    express.raw({ type: "application/json" }),
+    routes.payment
+  );
   app.use(express.urlencoded({ extended: true }));
-
-  app.use("/api/payment", express.json(), routes.payment);
-
-  app.use("/api/font", express.json(), routes.fontRoute);
-  app.use("/api/lang", express.json(), routes.langRoute);
-
-  app.use("/api/users", express.json(), routes.userRouter);
-  app.use("/api/roles", express.json(), routes.rolesRoutes);
-  app.use("/api/permission", express.json(), routes.permissionRoutes);
   app.use(express.json());
+  app.use("/api/payment", routes.payment);
+  app.use("/api/font/", routes.downloadRouter);
+
+  app.use("/api/font", routes.fontRoute);
+  app.use("/api/lang", routes.langRoute);
+
+  app.use("/api/users", routes.userRouter);
+  app.use("/api/roles", routes.rolesRoutes);
+  app.use("/api/permission", routes.permissionRoutes);
+
   app.use(cookieparser());
 
   const server = new ApolloServer({ typeDefs, resolvers });
