@@ -56,7 +56,7 @@ export class UserDb {
     order: "ASC" | "DESC",
     role: string
   ) {
-    console.log(role)
+    console.log(role);
     let qb = UserDb.userRepository
       .createQueryBuilder("user")
       .leftJoinAndSelect("user.role", "role")
@@ -85,7 +85,7 @@ export class UserDb {
     return {
       userList: users || [],
       totalCount: totalCount || 0,
-    };;
+    };
   }
 
   static async UpdateUser(user: User) {
@@ -142,7 +142,6 @@ export class UserDb {
     if (!result) {
       throw new HttpError(constants.NO_USER, 404);
     }
-    console.log(result);
     await PasswordHasher.Compare(user.password, result.password);
 
     const id = result.id;

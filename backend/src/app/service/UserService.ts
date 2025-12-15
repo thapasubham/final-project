@@ -86,7 +86,6 @@ export class UserService {
       orderBy as "ASC" | "DESC",
       role
     );
-    console.log(result, limit);
 
     return result;
   }
@@ -121,7 +120,7 @@ export class UserService {
 
   async purchasedFonts(
     userId: number,
-    page = 1,
+    page = 0,
     limit = 5,
     sortBy: "name" | "price" | "purchasedAt" = "purchasedAt",
     order: "ASC" | "DESC" = "DESC"

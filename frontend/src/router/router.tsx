@@ -28,7 +28,10 @@ export function Router() {
                     <Route path="/" element={<App />} />
                     <Route path="/payment" element={<PaymentAdd />} />
                     <Route path='/about' element={<About />} />
-                    <Route path='/login' element={<Login />} />
+                    <Route
+                        path="/login"
+                        element={!isLogged ? <Login /> : <Navigate to="/" replace />}
+                    />
                     <Route path='/dashboard'
                         element={isLogged ? <RoleProtectedRoute allowedRoles={["admin:view"]}>
                             <DashBoard />

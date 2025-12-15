@@ -34,18 +34,7 @@ function Login() {
     const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
     // Navigate back if already logged in
-    useEffect(() => {
-        if (isLogged) {
-            notify("Already logged in", "warning");
-            delay(500).then(() => {
-                if (window.history.length > 1) {
-                    navigate(-1);
-                } else {
-                    navigate("/dashboard");
-                }
-            });
-        }
-    }, []);
+
 
     const userInput = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

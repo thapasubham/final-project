@@ -18,7 +18,6 @@ export function validate(req: Request, res: Response, next: NextFunction) {
   const isvalid = Object.values(result).some((msg) => msg !== "");
   console.log(isvalid);
   if (isvalid) {
-    console.log(res, response);
     response.status = 400;
     response.data = result;
     return ResponseApi.WriteResponse(res, response);
@@ -111,12 +110,11 @@ function inputValidation(user: User) {
   } else if (!/^\d{10}$/.test(user.phoneNumber.trim())) {
     error.phoneNumber = "Phone number must be 10 digits";
   }
-if(user.password){
-  
- if (user.password.length < 6 || user.password.length > 15) {
-    error.password = "Password must be 6 to 15 characters long";
+  if (user.password) {
+    if (user.password.length < 6 || user.password.length > 15) {
+      error.password = "Password must be 6 to 15 characters long";
+    }
   }
-}
 
   return error;
 }

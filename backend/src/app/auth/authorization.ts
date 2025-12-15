@@ -14,8 +14,6 @@ export class Auth {
   ) {
     const decoded_token: any = await Auth.getDecodedToken(req);
     const id = Number(req.params.id);
-    console.log("hello");
-    console.log(decoded_token, id);
     const decodedID = Number(decoded_token.id);
 
     if (id !== decodedID) {

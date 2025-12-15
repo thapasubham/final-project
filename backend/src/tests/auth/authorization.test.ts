@@ -8,8 +8,6 @@ import { assert, expect } from "chai";
 import { HttpError } from "../../app/middleware/error";
 import { constants } from "../../constants/constant";
 
-
-
 describe("Auth Middleware class ", () => {
   let req: any;
   let res: any;
@@ -111,7 +109,7 @@ describe("Auth Middleware class ", () => {
           await middleware(req, res, next);
         } catch (err) {
           expect(err).to.be.instanceOf(HttpError);
-          expect(err.message).to.equal("Unauthorized");
+          expect(err.message).to.equal("Unauthorized to perform the task.");
         }
       });
 

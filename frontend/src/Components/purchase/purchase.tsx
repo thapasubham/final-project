@@ -26,7 +26,8 @@ const PurchaseHistory = () => {
     const notify = useNotification();
     const { userID } = useAuth();
     const [purchases, setPurchases] = useState<any[]>([]);
-    const [meta, setMeta] = useState<any>(null);
+    const [limit] = useState(2); // Items per page
+    const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
 
     const [page, setPage] = useState(1);
@@ -38,15 +39,9 @@ const PurchaseHistory = () => {
     const fetchPurchases = async () => {
         if (!id) return;
         setLoading(true);
-
+        const offset = (page - 1) * limit;
         try {
-            let response = await getUserPurchases(
-                Number(id),
-                page,
-                5,
-                sortBy,
-                order
-            );
+            let response = await getUserPurchases(Number(id), offset, limit, sortBy, order);
 
             if (response.status === 401) {
                 const refreshed = await Refresh();
@@ -55,20 +50,15 @@ const PurchaseHistory = () => {
                     navigate("/login");
                     return;
                 }
-                response = await getUserPurchases(
-                    Number(id),
-                    page,
-                    5,
-                    sortBy,
-                    order
-                );
+                response = await getUserPurchases(Number(id), page, limit, sortBy, order);
             }
 
             if (response.status === 200) {
                 setPurchases(response.data.data);
-                setMeta(response.data.meta);
+                // Calculate total pages
+                const total = response.data.total;
+                setTotalPages(Math.ceil(total / limit));
             } else {
-                console.log(response.data);
                 notify(response.data.message, "error");
             }
         } catch (err: any) {
@@ -174,15 +164,17 @@ const PurchaseHistory = () => {
             )}
 
             {/* Pagination */}
-            {meta && meta.totalPages > 1 && (
+            {totalPages > 1 && (
                 <Box display="flex" justifyContent="center" mt={4}>
                     <Pagination
-                        count={meta.totalPages}
+                        count={totalPages}
                         page={page}
                         onChange={(_, value) => setPage(value)}
+                        color="primary"
                     />
                 </Box>
             )}
+
 
             <Box mt={4}>
                 <Button

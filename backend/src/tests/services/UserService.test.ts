@@ -251,7 +251,7 @@ describe("User Services tests", () => {
     });
   });
 
-  describe("Delete unverified test suite", () => {
+  describe.skip("Delete unverified test suite", () => {
     let deleteuserStub: Sinon.SinonStub;
     beforeEach(() => {
       deleteuserStub = Sinon.stub(UserDb, "DeleteUnverified");

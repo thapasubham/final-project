@@ -75,7 +75,9 @@ export class PaymentDB {
       .leftJoinAndSelect("uf.font", "font")
       .leftJoinAndSelect("uf.user", "user")
       .leftJoin("font.createdBy", "creator")
-      .where("uf.userId = :userId", { userId });
+      .where("uf.userId = :userId", { userId })
+      .limit(limit)
+      .offset(offset);
 
     if (sortBy === "name") {
       qb.orderBy("font.name", order);
@@ -99,7 +101,7 @@ export class PaymentDB {
     ]);
 
     const [data, total] = await qb.getManyAndCount();
-    console.log(data);
+    console.log(data, total);
     return {
       data,
       total,

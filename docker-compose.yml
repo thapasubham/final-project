@@ -5,7 +5,7 @@ services:
     image: postgres
     restart: unless-stopped
     ports: 
-      - "8001:5432"
+      - "8000:5432"
     environment:
       POSTGRES_PASSWORD: subham12
       TZ: Asia/Kathmandu
@@ -20,7 +20,7 @@ services:
     restart: unless-stopped
     build: /backend
     ports: 
-    - "3005:3000"
+    - "3000:3000"
     networks:
       - font
     volumes:
@@ -34,7 +34,7 @@ services:
       - backend
     build: /frontend
     ports: 
-    - "5007:5000"
+    - "5000:5000"
     command: npm run dev 
     # environment:
       # - BASE_URL=http://localhost:3000/api
