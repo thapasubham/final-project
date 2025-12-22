@@ -13,7 +13,6 @@ const fontRepo = AppDataSource.getRepository(Font);
 export default class PaymentService {
   private stripe = new StripeService();
 
-  // Create a Stripe payment intent and save a pending record
   async createPaymentIntent(data: { userID: number; fontId: number }) {
     const { userID, fontId } = data;
 
@@ -21,7 +20,6 @@ export default class PaymentService {
     if (!font) throw new Error("Font not found");
 
     if (Number(font.price) === 0) {
-      //free font
       await this.handleFreePurchase(userID, fontId);
       if (Number(font.price) === 0) {
         await this.handleFreePurchase(userID, fontId);

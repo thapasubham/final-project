@@ -9,6 +9,7 @@ lerna-debug.log*
 coverage
 node_modules
 dist
+docs
 dist-ssr
 *.local
 static
@@ -23,3 +24,4 @@ static
 *.njsproj
 *.sln
 *.sw?
+

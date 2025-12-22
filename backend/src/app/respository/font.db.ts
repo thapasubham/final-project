@@ -4,6 +4,31 @@ import { Langdb } from "./lang.db.js";
 
 const respository = AppDataSource.getRepository(Font);
 export class fontdb {
+  static async Update(
+    fontId: number,
+    updateData: Partial<Font>,
+    lang_id?: number[]
+  ) {
+    // 1. Find existing font
+    const font = await respository.findOne({
+      where: { id: fontId },
+      relations: ["langs"],
+    });
+
+    if (!font) {
+      throw new Error(`Font with ID ${fontId} not found`);
+    }
+
+    Object.assign(font, updateData);
+    if (lang_id && lang_id.length > 0) {
+      const languages = await Langdb.Reads(lang_id);
+      font.langs = languages;
+    }
+
+    const updatedFont = await respository.save(font);
+
+    return updatedFont;
+  }
   static async Create(font: Font, lang_id: number[]) {
     const languages = await Langdb.Reads(lang_id);
     const fontDate = respository.create({

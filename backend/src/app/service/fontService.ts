@@ -26,4 +26,12 @@ export class FontService {
     );
     return result;
   }
+  async UpdateFont(
+    fontId: number,
+    updateData: Partial<Font>,
+    lang_id?: number[]
+  ) {
+    const result = await fontdb.Update(fontId, updateData, lang_id);
+    return result;
+  }
 }

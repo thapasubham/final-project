@@ -2,9 +2,10 @@ import { Box, Card, IconButton, Typography } from "@mui/material";
 import type { preview } from "../../types/previewTypes.ts";
 import { API_URL } from "../../utils/config.ts";
 import { useEffect, useState } from "react";
-import { ContentCopyRounded, Shop, Shop2Outlined, ShoppingCart } from "@mui/icons-material";
+import { Compare, ContentCopyRounded, Shop, Shop2Outlined, ShoppingCart } from "@mui/icons-material";
 import { FontSkeleton } from "./FontSkeleton.tsx";
 import { useAuth } from "../../auth/AuthContext.tsx";
+import { useNavigate } from "react-router-dom";
 
 interface Font {
     id: number;
@@ -30,6 +31,13 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
     const fontUrl = `${API_URL}/static/${img.fileName}`;
     const [isLoading, setIsLoading] = useState(true);
     const { isLogged, userID } = useAuth();
+    const navigate = useNavigate();
+
+    const openComparison = () => {
+        navigate("/compare", {
+            state: { font: img, previewText }
+        });
+    };
 
     useEffect(() => {
         const link = document.createElement('link');
@@ -193,6 +201,9 @@ function PreviewRow({ previewText, preview, img, setMissingGlyphs, viewMode, onC
                         <ShoppingCart />
                     </IconButton>
                     }
+                    <IconButton onClick={openComparison}>
+                        <Compare />
+                    </IconButton>
                 </Box>
                 <Box
                     sx={{

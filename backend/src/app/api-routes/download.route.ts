@@ -7,7 +7,7 @@ import { Request, Response } from "express";
 import { checkFontPurchased } from "../middleware/payment.middleware.js";
 import { Auth } from "../auth/authorization.js";
 import { fontdb } from "../respository/font.db.js";
-// import balls from "../../../static"
+
 const router = Router();
 
 const __dirname = dirname(fileURLToPath(import.meta.url));

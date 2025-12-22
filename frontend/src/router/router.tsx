@@ -15,6 +15,7 @@ import PurchaseHistory from "../Components/purchase/purchase.tsx";
 import { useAuth } from "../auth/AuthContext.tsx";
 import UploadFont from "../Components/fontUpload/fontUpload.tsx";
 import RoleAdminPanel from "../roles/roles.tsx";
+import FontComparisonPage from "../Components/comparision/Compare.tsx";
 export function Router() {
     const { isLogged } = useAuth();
 
@@ -44,6 +45,7 @@ export function Router() {
                     <Route path='/profile/:id' element={isLogged ? <Profile /> : <Navigate to="/login" />} />
                     <Route path='/unauthorized' element={<Unauthorized />} />
                     <Route path='/payment-success' element={<>Hello</>} />
+                    <Route path="/compare" element={<FontComparisonPage />} />
                     <Route
                         path="/user/:id/purchases"
                         element={<PurchaseHistory />}
