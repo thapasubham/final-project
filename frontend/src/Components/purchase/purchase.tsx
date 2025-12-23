@@ -26,7 +26,7 @@ const PurchaseHistory = () => {
     const notify = useNotification();
     const { userID } = useAuth();
     const [purchases, setPurchases] = useState<any[]>([]);
-    const [limit] = useState(2); // Items per page
+    const [limit] = useState(5); // Items per page
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
 
@@ -40,6 +40,7 @@ const PurchaseHistory = () => {
         if (!id) return;
         setLoading(true);
         const offset = (page - 1) * limit;
+        console.log(offset, limit)
         try {
             let response = await getUserPurchases(Number(id), offset, limit, sortBy, order);
 
@@ -56,6 +57,7 @@ const PurchaseHistory = () => {
             if (response.status === 200) {
                 setPurchases(response.data.data);
                 // Calculate total pages
+                console.log(response.data)
                 const total = response.data.total;
                 setTotalPages(Math.ceil(total / limit));
             } else {
@@ -151,7 +153,7 @@ const PurchaseHistory = () => {
                                         </IconButton>}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary">
-                                    ${purchase.font.price}
+                                    {purchase.font.price == 0? "Free": `$${purchase.font.price}`}
                                 </Typography>
                                 <Typography variant="caption" color="text.secondary">
                                     Purchased on{" "}

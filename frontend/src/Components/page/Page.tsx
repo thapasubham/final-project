@@ -159,8 +159,7 @@ function Page() {
                             }}
                         >
                             <RestartAltIcon sx={{ mr: 1 }} />
-                            Reset all
-                        </Button>
+                            Reset Previews                        </Button>
                         <Button onClick={() => setReset(true)}><Restore />Reset Filter</Button>
                     </Box>
                 </Box><Divider />
